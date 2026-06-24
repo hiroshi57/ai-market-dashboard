@@ -2112,9 +2112,14 @@ function initCharts(){
   });
 }
 
-function scrollTo(id){
-  var el = document.getElementById(id);
-  if(el) el.scrollIntoView({behavior:'smooth'});
+function scrollToSection(id, el){
+  var target = document.getElementById(id);
+  if(target) target.scrollIntoView({behavior:'smooth'});
+  // トップバータブのアクティブ表示を更新（filterCards と同じ .on パターン）
+  if(el){
+    document.querySelectorAll('.topbar-tabs .topbar-tab').forEach(function(t){ t.classList.remove('on'); });
+    el.classList.add('on');
+  }
 }
 
 /* ====================================================
