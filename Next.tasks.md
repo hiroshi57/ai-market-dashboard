@@ -1,25 +1,44 @@
 # Next Tasks — AI未浸透市場ダッシュボード（外販サービス化ロードマップ）
 
 > 最終更新: 2026-06-24
-> 目的: 現状の「単一HTML静的ダッシュボード（Vercel配信 / Chart.js CDN / データはHTMLにハードコード）」を、**外部顧客に販売できるサービス**へ段階的に進化させる。
+> 目的: 現状の「単一HTML静的ダッシュボード」を、**外部顧客に販売できるサービス**へ段階的に進化させる。
+
+---
+
+## 🔜 次にやること（明日以降・優先順）
+
+1. **【最優先・宿題】Vercelデプロイ先の特定と確認**
+   - `ai-market-dashboard.vercel.app` は **別のNext.jsアプリ**だった（本リポジトリではない）。本ダッシュボードの正しい公開URLが不明。
+   - やること: Vercelダッシュボードでこのリポジトリに紐づくプロジェクト/URLを確認 → 最新コミット(c07a8bc)がデプロイされているか、`/data/markets.json` が 200 で配信されるかを確認。
+   - ⚠ Sprint 1 で `fetch('data/markets.json')` 依存になったため、**data/ が配信されないと画面が空になる**。デプロイ後の実画面確認が必須。
+   - 必要なら GitHub→Vercel の連携を貼り直す。
+
+2. **実ブラウザでの目視確認**（ローカル or 本番）
+   - ローカル: リポジトリ直下でHTTPサーバを立て（例 `python -m http.server` / `npx serve`）`http://localhost:PORT/` を開く（`file://` 直開きは fetch が動かず不可）。
+   - 確認項目: タブのスムーズスクロール＋アクティブ表示、15業界カード/TOP_PICKS/各テーブル/チャートの描画、コンソールエラーなし。
+
+3. **Sprint 2 着手**（認証＋フリーミアムのアクセス制御。下記参照）
 
 ---
 
 ## 現状サマリ（Baseline）
 
-| 項目 | 現状 |
+| 項目 | 現状（2026-06-24 時点） |
 |---|---|
-| 構成 | 単一HTMLファイル（`index.html` = `ai-market-dashboard.html`）をVercelで静的配信 |
-| データ | HTML内にハードコード（15業界 + 回避7市場 + ROI/TimesFM予測） |
-| 描画 | Chart.js 4.4.0（CDN） |
-| 認証/課金 | なし |
-| 更新フロー | 手動でHTML編集 → push → Vercel自動デプロイ |
+| 構成 | 単一HTML（`index.html` = `ai-market-dashboard.html`）＋ `data/markets.json` を静的配信 |
+| データ | **`data/markets.json` に外部化済み**（fetchで読み込み）。15業界 + 回避7市場 + TOP3 + ROI/予測 |
+| 描画 | Chart.js 4.4.0（CDN）／ render*() は JSON駆動 |
+| 認証/課金 | なし（Sprint 2/3 で実装予定） |
+| 更新フロー | データは `data/markets.json` 編集 → push → Vercel自動デプロイ |
+| ドキュメント | `docs/service-plan.md`（企画）, `docs/lp-design.md`（LP/CTA設計） |
 
-### 直近で完了した整備（2026-06-24）
-- ✅ トップバータブのバグ修正（`scrollTo` → `scrollToSection(id, el)` リネーム＋アクティブ表示）
-- ✅ `index.html` と `ai-market-dashboard.html` の内容同期
-- ✅ `project.json`（Vercelリンクファイル）の追跡解除＋`.gitignore`追記
-- ✅ git init / GitHubリモート連携
+### 完了済み（2026-06-24）
+- ✅ トップバータブのバグ修正（`scrollTo` → `scrollToSection(id, el)`＋アクティブ表示）
+- ✅ `index.html` と `ai-market-dashboard.html` の同期
+- ✅ `project.json` 追跡解除＋`.gitignore`追記、git init / GitHub連携
+- ✅ **Sprint 0**: 企画書・LP設計・ロードマップ再編（コミット e8ff9ee）
+- ✅ **Sprint 1**: データ/UI分離（`data/markets.json` 外部化・fetch駆動。コミット c07a8bc）
+- ⏳ **未確認**: 本番デプロイURL（上記「次にやること」#1 参照）
 
 ---
 
