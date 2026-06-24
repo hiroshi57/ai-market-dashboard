@@ -38,8 +38,8 @@
   --shadow:     0 4px 6px rgba(15,23,42,.07),0 2px 4px rgba(15,23,42,.06);
   --shadow-lg:  0 10px 25px rgba(15,23,42,.10),0 4px 10px rgba(15,23,42,.06);
   /* Typography */
-  --f-head: 'Helvetica Neue','Arial Black','Hiragino Kaku Gothic ProN','Yu Gothic','Meiryo',-apple-system,sans-serif;
-  --f-body: 'Hiragino Kaku Gothic ProN','Hiragino Sans','Yu Gothic','Meiryo',-apple-system,sans-serif;
+  --f-head: 'Meiryo UI','Meiryo','Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif;
+  --f-body: 'Meiryo','Meiryo UI','Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif;
   --f-mono: 'SF Mono','Consolas','Menlo',monospace;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -480,11 +480,11 @@ tr:hover td{background:var(--surface2)}
     </div>
   </div>
   <div class="topbar-tabs">
-    <button class="topbar-tab on" onclick="scrollTo('sec-overview')">概要</button>
-    <button class="topbar-tab" onclick="scrollTo('sec-industries')">業界詳細</button>
-    <button class="topbar-tab" onclick="scrollTo('sec-timefm')">TimesFM予測</button>
-    <button class="topbar-tab" onclick="scrollTo('sec-recommend')">推奨ターゲット</button>
-    <button class="topbar-tab" onclick="scrollTo('sec-avoid')">回避市場</button>
+    <button class="topbar-tab on" onclick="scrollToSection('sec-overview',this)">概要</button>
+    <button class="topbar-tab" onclick="scrollToSection('sec-industries',this)">業界詳細</button>
+    <button class="topbar-tab" onclick="scrollToSection('sec-timefm',this)">TimesFM予測</button>
+    <button class="topbar-tab" onclick="scrollToSection('sec-recommend',this)">推奨ターゲット</button>
+    <button class="topbar-tab" onclick="scrollToSection('sec-avoid',this)">回避市場</button>
   </div>
   <div class="topbar-meta">
     <span><span class="live-dot"></span>LIVE</span>
@@ -512,7 +512,7 @@ tr:hover td{background:var(--surface2)}
     <a class="s-link" data-filter="important" onclick="filterCards('important',this)">
       <span class="s-dot" style="background:var(--orange)"></span>
       🔶 早急参入（2028末）
-      <span class="s-count" style="background:var(--orange-lt);color:var(--orange)">5</span>
+      <span class="s-count" style="background:var(--orange-lt);color:var(--orange)">8</span>
     </a>
     <a class="s-link" data-filter="normal" onclick="filterCards('normal',this)">
       <span class="s-dot" style="background:var(--primary)"></span>
