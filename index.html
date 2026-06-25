@@ -467,6 +467,63 @@ tr:hover td{background:var(--surface2)}
 .type-loop{background:#F5F3FF;color:#6D28D9;border-color:#DDD6FE}
 .type-施策{background:var(--green-lt);color:#065F46;border-color:var(--green-br)}
 
+/* ══ UI Improvements ════════════════════════════════ */
+
+/* ① Topbar 整理 */
+.topbar{gap:8px;padding:0 16px;flex-wrap:nowrap}
+.topbar-meta{display:none}
+.logo-text{font-size:13px;white-space:nowrap}
+.topbar-tabs{flex-shrink:1;min-width:0}
+.topbar-tab{padding:4px 9px;white-space:nowrap}
+
+/* ④ Sidebar 折りたたみ */
+.s-label-btn{display:flex;align-items:center;justify-content:space-between;width:100%;font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;padding:8px 8px 4px;background:none;border:none;cursor:pointer;font-family:inherit;}
+.s-label-btn:hover{color:var(--text2)}
+.s-collapse-icon{font-size:9px;transition:transform .2s ease;flex-shrink:0;opacity:.6}
+.s-collapse-icon.open{transform:rotate(180deg)}
+.s-collapsible{overflow:hidden;max-height:600px;transition:max-height .3s ease,opacity .25s ease;opacity:1}
+.s-collapsible.collapsed{max-height:0;opacity:0}
+
+/* ⑤ Mobile */
+.hamburger{display:none;flex-direction:column;gap:4px;padding:7px 6px;background:none;border:none;cursor:pointer;border-radius:6px;flex-shrink:0}
+.hamburger:hover{background:var(--surface2)}
+.hamburger span{display:block;width:18px;height:2px;background:var(--text2);border-radius:2px;transition:.25s}
+.hamburger.open span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0)}
+.hamburger.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:300;backdrop-filter:blur(1px)}
+.sidebar-overlay.open{display:block}
+.sidebar-close-btn{display:none;position:absolute;top:8px;right:8px;background:var(--surface2);border:none;border-radius:6px;padding:3px 8px;font-size:13px;color:var(--text3);cursor:pointer;line-height:1.5}
+.sidebar-close-btn:hover{background:var(--border);color:var(--text)}
+
+@media(max-width:768px){
+  .shell{grid-template-rows:52px 1fr}
+  .topbar{padding:0 12px}
+  .topbar-tabs{display:none}
+  .hamburger{display:flex}
+  .topbar-auth .btn-login{display:none}
+  .body{grid-template-columns:1fr}
+  .sidebar{position:fixed;left:-224px;top:52px;bottom:0;width:220px;z-index:301;transition:left .25s ease;box-shadow:var(--shadow-lg);}
+  .sidebar.open{left:0}
+  .sidebar-close-btn{display:block}
+  .main{padding:14px}
+  .g2,.g3{grid-template-columns:1fr}
+  .g4{grid-template-columns:repeat(2,1fr)}
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .lock-overlay-box{padding:20px 16px}
+}
+@media(max-width:480px){
+  .kpi-grid{grid-template-columns:1fr}
+  .g4{grid-template-columns:1fr}
+  .topbar-auth .btn-signup{padding:5px 10px;font-size:11px}
+}
+
+/* ② Unlock animation */
+.lock-content{transition:filter .5s cubic-bezier(.4,0,.2,1),opacity .35s ease}
+.lock-content.locked{filter:blur(5px);pointer-events:none;user-select:none;opacity:.75}
+@keyframes unlockReveal{0%{transform:scale(.99);opacity:.6}60%{transform:scale(1.004)}100%{transform:scale(1);opacity:1}}
+.lock-content.unlocked{animation:unlockReveal .45s ease forwards}
+
 /* ══ Sprint 2: Auth UI ══════════════════════════════ */
 
 /* ── Topbar Auth Buttons ── */
@@ -498,10 +555,15 @@ tr:hover td{background:var(--surface2)}
 /* ── Auth Modal ── */
 .auth-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:1000;display:none}
 .auth-modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:1001;width:390px;max-width:92vw;background:var(--surface);border-radius:14px;box-shadow:var(--shadow-lg);padding:28px 28px 24px;display:none;box-sizing:border-box}
-.auth-modal-close{position:absolute;top:12px;right:14px;background:transparent;border:none;font-size:18px;color:var(--text3);cursor:pointer;line-height:1;padding:4px;font-family:inherit}
-.auth-modal-close:hover{color:var(--text)}
-.auth-modal-logo{font-size:26px;margin-bottom:4px}
-.auth-modal-title{font-family:var(--f-head);font-size:14px;font-weight:800;color:var(--text);margin-bottom:18px}
+.auth-modal-close{position:absolute;top:12px;right:14px;background:rgba(255,255,255,.2);border:none;font-size:15px;color:#fff;cursor:pointer;line-height:1;padding:4px 7px;border-radius:6px;font-family:inherit;z-index:1}
+.auth-modal-close:hover{background:rgba(255,255,255,.35)}
+.auth-modal-header{background:linear-gradient(135deg,var(--primary) 0%,#1D4ED8 100%);margin:-28px -28px 20px;padding:22px 28px 18px;border-radius:14px 14px 0 0}
+.auth-modal-logo{font-size:22px;margin-bottom:6px}
+.auth-modal-title{font-family:var(--f-head);font-size:15px;font-weight:800;color:#fff;margin-bottom:3px}
+.auth-modal-subtitle{font-size:11px;color:rgba(255,255,255,.8);margin-bottom:12px}
+.auth-modal-perks{display:flex;flex-direction:column;gap:3px}
+.auth-modal-perk{font-size:11px;color:rgba(255,255,255,.9)}
+.auth-modal-perk::before{content:'✓  ';font-weight:800;color:rgba(255,255,255,.7)}
 .auth-tabs{display:flex;gap:0;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:18px}
 .auth-tab{flex:1;padding:8px;font-size:12px;font-weight:600;color:var(--text2);background:transparent;border:none;cursor:pointer;transition:.15s;font-family:inherit}
 .auth-tab.on{background:var(--primary);color:#fff;font-weight:700}
@@ -530,10 +592,13 @@ tr:hover td{background:var(--surface2)}
 
 <!-- ══ TOPBAR ══ -->
 <header class="topbar">
+  <button class="hamburger" id="hamburger-btn" aria-label="メニュー" onclick="toggleSidebar()">
+    <span></span><span></span><span></span>
+  </button>
   <div class="logo">
     <div class="logo-icon">🔍</div>
     <div>
-      <div class="logo-text">AI未浸透市場 ダッシュボード</div>
+      <div class="logo-text">AI未浸透市場</div>
     </div>
   </div>
   <div class="topbar-tabs">
@@ -564,7 +629,9 @@ tr:hover td{background:var(--surface2)}
 <div class="body">
 
 <!-- ══ SIDEBAR ══ -->
-<nav class="sidebar">
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+<nav class="sidebar" id="sidebar">
+  <button class="sidebar-close-btn" onclick="toggleSidebar()">✕</button>
   <div class="s-group">
     <span class="s-label">参入推奨</span>
     <a class="s-link on" data-filter="all" onclick="filterCards('all',this)">
@@ -607,22 +674,27 @@ tr:hover td{background:var(--surface2)}
   </div>
   <div class="s-divider"></div>
   <div class="s-group">
-    <span class="s-label">産業大分類（e-Stat）</span>
-    <a class="s-link" href="#kaigo"><span class="s-dot" style="background:#059669"></span>P: 医療、福祉</a>
-    <a class="s-link" href="#kensetsu"><span class="s-dot" style="background:#2563EB"></span>D: 建設業</a>
-    <a class="s-link" href="#houritu"><span class="s-dot" style="background:#7C3AED"></span>L: 学術研究・専門</a>
-    <a class="s-link" href="#gyousei"><span class="s-dot" style="background:#06B6D4"></span>S: 公務</a>
-    <a class="s-link" href="#clinic"><span class="s-dot" style="background:#EC4899"></span>P: 医療（診療所）</a>
-    <a class="s-link" href="#nogyou"><span class="s-dot" style="background:#D97706"></span>A: 農業、林業</a>
-    <a class="s-link" href="#suisan"><span class="s-dot" style="background:#6366F1"></span>B: 漁業</a>
-    <a class="s-link" href="#ringyou"><span class="s-dot" style="background:#10B981"></span>A: 林業</a>
-    <a class="s-link" href="#chusho"><span class="s-dot" style="background:#F59E0B"></span>R: その他サービス</a>
-    <a class="s-link" href="#shukyou"><span class="s-dot" style="background:#94A3B8"></span>N: 生活関連サービス</a>
-    <a class="s-link" href="#craft"><span class="s-dot" style="background:#F97316"></span>E: 製造業（伝統）</a>
-    <a class="s-link" href="#npo"><span class="s-dot" style="background:#22D3EE"></span>O: 教育・学習支援</a>
-    <a class="s-link" href="#fudosan"><span class="s-dot" style="background:#0EA5E9"></span>K: 不動産業</a>
-    <a class="s-link" href="#hotel"><span class="s-dot" style="background:#F59E0B"></span>M: 宿泊・飲食サービス</a>
-    <a class="s-link" href="#nokyo"><span class="s-dot" style="background:#22C55E"></span>Q: 農協・生協</a>
+    <button class="s-label-btn" onclick="toggleCollapse('col-industry')" aria-expanded="false">
+      産業大分類（e-Stat）
+      <span class="s-collapse-icon" id="icon-industry">▼</span>
+    </button>
+    <div class="s-collapsible collapsed" id="col-industry">
+      <a class="s-link" href="#kaigo"><span class="s-dot" style="background:#059669"></span>P: 医療、福祉</a>
+      <a class="s-link" href="#kensetsu"><span class="s-dot" style="background:#2563EB"></span>D: 建設業</a>
+      <a class="s-link" href="#houritu"><span class="s-dot" style="background:#7C3AED"></span>L: 学術研究・専門</a>
+      <a class="s-link" href="#gyousei"><span class="s-dot" style="background:#06B6D4"></span>S: 公務</a>
+      <a class="s-link" href="#clinic"><span class="s-dot" style="background:#EC4899"></span>P: 医療（診療所）</a>
+      <a class="s-link" href="#nogyou"><span class="s-dot" style="background:#D97706"></span>A: 農業、林業</a>
+      <a class="s-link" href="#suisan"><span class="s-dot" style="background:#6366F1"></span>B: 漁業</a>
+      <a class="s-link" href="#ringyou"><span class="s-dot" style="background:#10B981"></span>A: 林業</a>
+      <a class="s-link" href="#chusho"><span class="s-dot" style="background:#F59E0B"></span>R: その他サービス</a>
+      <a class="s-link" href="#shukyou"><span class="s-dot" style="background:#94A3B8"></span>N: 生活関連サービス</a>
+      <a class="s-link" href="#craft"><span class="s-dot" style="background:#F97316"></span>E: 製造業（伝統）</a>
+      <a class="s-link" href="#npo"><span class="s-dot" style="background:#22D3EE"></span>O: 教育・学習支援</a>
+      <a class="s-link" href="#fudosan"><span class="s-dot" style="background:#0EA5E9"></span>K: 不動産業</a>
+      <a class="s-link" href="#hotel"><span class="s-dot" style="background:#F59E0B"></span>M: 宿泊・飲食サービス</a>
+      <a class="s-link" href="#nokyo"><span class="s-dot" style="background:#22C55E"></span>Q: 農協・生協</a>
+    </div>
   </div>
 </nav>
 
@@ -1713,8 +1785,14 @@ function updateAuthUI(session){
 }
 
 function unlockContent(){
-  document.querySelectorAll('.lock-content').forEach(function(el){ el.classList.remove('locked'); });
   document.querySelectorAll('.lock-overlay').forEach(function(el){ el.style.display = 'none'; });
+  document.querySelectorAll('.lock-content').forEach(function(el){
+    el.classList.remove('locked');
+    el.classList.remove('unlocked');
+    // アニメーション再トリガー ②
+    void el.offsetWidth;
+    el.classList.add('unlocked');
+  });
 }
 
 function lockContent(){
@@ -1839,6 +1917,31 @@ function showToast(msg){
   setTimeout(function(){ t.style.display='none'; }, 3000);
 }
 
+/* ── ④ Sidebar Collapsible ── */
+function toggleCollapse(id){
+  var content = document.getElementById(id);
+  var iconId  = id.replace('col-','icon-');
+  var icon    = document.getElementById(iconId);
+  var btn     = content && content.previousElementSibling;
+  if(!content) return;
+  var isCollapsed = content.classList.contains('collapsed');
+  content.classList.toggle('collapsed', !isCollapsed);
+  if(icon) icon.classList.toggle('open', isCollapsed);
+  if(btn)  btn.setAttribute('aria-expanded', isCollapsed ? 'true' : 'false');
+}
+
+/* ── ⑤ Mobile Sidebar ── */
+function toggleSidebar(){
+  var sidebar  = document.getElementById('sidebar');
+  var overlay  = document.getElementById('sidebar-overlay');
+  var hamburger= document.getElementById('hamburger-btn');
+  if(!sidebar) return;
+  var isOpen = sidebar.classList.toggle('open');
+  overlay.classList.toggle('open', isOpen);
+  if(hamburger) hamburger.classList.toggle('open', isOpen);
+  document.body.style.overflow = isOpen ? 'hidden' : '';
+}
+
 /* ── Keyboard: Esc でモーダル閉じる / Enter でフォーム送信 ── */
 document.addEventListener('keydown', function(e){
   if(e.key==='Escape'){ closeAuthModal(); }
@@ -1878,9 +1981,17 @@ document.addEventListener('DOMContentLoaded', function(){
 <!-- ══ Auth Modal (Sprint 2) ══ -->
 <div class="auth-backdrop" id="auth-backdrop" onclick="closeAuthModal()"></div>
 <div class="auth-modal" id="auth-modal" role="dialog" aria-modal="true" aria-label="認証">
-  <button class="auth-modal-close" onclick="closeAuthModal()" aria-label="閉じる">✕</button>
-  <div class="auth-modal-logo">🔍</div>
-  <div class="auth-modal-title">AI未浸透市場ダッシュボード</div>
+  <div class="auth-modal-header">
+    <button class="auth-modal-close" onclick="closeAuthModal()" aria-label="閉じる">✕</button>
+    <div class="auth-modal-logo">🔍</div>
+    <div class="auth-modal-title">AI未浸透市場ダッシュボード</div>
+    <div class="auth-modal-subtitle">無料登録で全データにアクセス</div>
+    <div class="auth-modal-perks">
+      <div class="auth-modal-perk">TimesFM予測・参入デッドライン一覧</div>
+      <div class="auth-modal-perk">TOP推奨ターゲット・12ヶ月ロードマップ</div>
+      <div class="auth-modal-perk">詳細ROI試算テーブル（業界別）</div>
+    </div>
+  </div>
   <div class="auth-tabs">
     <button class="auth-tab on" data-tab="signup" onclick="switchAuthTab('signup')">無料登録</button>
     <button class="auth-tab" data-tab="login" onclick="switchAuthTab('login')">ログイン</button>
