@@ -118,8 +118,9 @@ button{cursor:pointer;font-family:inherit;border:none;}
 
 /* ── Section ── */
 .sec{margin-bottom:28px}
-.sec-hdr{margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
-.sec-title{font-size:14px;font-weight:800;color:var(--text);display:flex;align-items:center;gap:6px;font-family:var(--f-head)}
+.sec-hdr{margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.sec-title{font-size:14px;font-weight:800;color:var(--text);display:flex;align-items:center;gap:6px;font-family:var(--f-head);position:relative}
+.sec-title::before{content:'';display:block;width:3px;height:16px;background:var(--primary);border-radius:2px;flex-shrink:0}
 .sec-meta{font-size:11px;color:var(--text3)}
 
 /* ── Card Base ── */
@@ -279,9 +280,12 @@ tr:hover td{background:var(--surface2)}
 /* ── Responsive ── */
 @media(max-width:1100px){
   .body{grid-template-columns:1fr}
-  .sidebar{display:none}
+  /* sidebar は JS で toggle する（display:none を削除）*/
+  .sidebar{position:fixed;left:-224px;top:56px;bottom:0;width:220px;z-index:301;transition:left .25s ease;box-shadow:var(--shadow-lg);}
+  .sidebar.open{left:0}
+  .hamburger{display:flex}
   .kpi-grid{grid-template-columns:repeat(3,1fr)}
-  .top-grid{grid-template-columns:1fr}
+  .top-grid{grid-template-columns:repeat(2,1fr)}
   .g2,.g3{grid-template-columns:1fr}
 }
 @media(max-width:700px){
@@ -289,6 +293,7 @@ tr:hover td{background:var(--surface2)}
   .nc-ai-block{grid-template-columns:1fr}
   .ba-grid{grid-template-columns:1fr}
   .info-row{grid-template-columns:repeat(2,1fr)}
+  .top-grid{grid-template-columns:1fr}
 }
 
 /* ── Animations ── */
@@ -412,9 +417,11 @@ tr:hover td{background:var(--surface2)}
 .btn-cta-primary:hover{background:#047857;transform:translateY(-1px);box-shadow:0 4px 12px rgba(5,150,105,.25)}
 .btn-cta-secondary{padding:9px 20px;border-radius:8px;font-size:13px;font-weight:600;color:var(--primary);background:transparent;border:1.5px solid var(--primary);cursor:pointer;transition:.15s;font-family:inherit}
 .btn-cta-secondary:hover{background:var(--primary-lt)}
-.reason-card:hover{border-color:var(--green);box-shadow:var(--shadow-sm)}
-.reason-num{font-size:9px;font-weight:800;color:var(--text3);letter-spacing:.12em;margin-bottom:4px}
-.reason-val{font-size:15px;font-weight:800;color:var(--text);font-family:var(--f-head);margin-bottom:2px;line-height:1.2}
+.reason-card:hover{border-color:var(--green);box-shadow:var(--shadow);transform:translateY(-2px)}
+.reason-card:hover .reason-icon{transform:scale(1.1)}
+.reason-icon{font-size:22px;margin-bottom:6px;transition:transform .2s ease;display:block}
+.reason-num{font-size:9px;font-weight:800;color:var(--green);letter-spacing:.12em;margin-bottom:4px;opacity:.7}
+.reason-val{font-size:14px;font-weight:800;color:var(--text);font-family:var(--f-head);margin-bottom:4px;line-height:1.2}
 .reason-lbl{font-size:11px;color:var(--text2);line-height:1.4}
 .hero-stats{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:11px;color:var(--text3);padding-top:12px;border-top:1px solid var(--border)}
 .hs-div{color:var(--border2)}
@@ -745,16 +752,19 @@ tr:hover td{background:var(--surface2)}
   <div class="hero-kpi">年間 <strong>¥2,400万</strong> 削減 / 施設 &nbsp;|&nbsp; 回収期間 <strong>8ヶ月</strong> &nbsp;|&nbsp; 先行競合ほぼゼロ</div>
   <div class="hero-reasons">
     <div class="reason-card">
+      <span class="reason-icon">👥</span>
       <div class="reason-num">REASON 01</div>
       <div class="reason-val">120名 / 210万人</div>
       <div class="reason-lbl">AIエンジニア密度が全業界最低。誰も参入していない空白地帯</div>
     </div>
     <div class="reason-card">
+      <span class="reason-icon">🏆</span>
       <div class="reason-num">REASON 02</div>
       <div class="reason-val">競合サービスほぼゼロ</div>
       <div class="reason-lbl">介護特化の商用AIサービスがほぼ未存在。先行すれば独占できる</div>
     </div>
     <div class="reason-card">
+      <span class="reason-icon">💴</span>
       <div class="reason-num">REASON 03</div>
       <div class="reason-val">補助金 最大¥500万</div>
       <div class="reason-lbl">介護DX補助金（2026年度末締切）で導入初期コストをゼロ化できる</div>
@@ -1008,13 +1018,6 @@ tr:hover td{background:var(--surface2)}
     </div>
   </div>
   <div id="avoid-container"></div>
-</div>
-
-<!-- FOOTER -->
-<div style="text-align:center;padding:20px;color:var(--text3);font-size:11px;border-top:1px solid var(--border);margin-top:20px">
-  📊 Japan AI Gap Intelligence Dashboard 2026 ｜ 産業分類: 日本標準産業分類 第四版（総務省統計局 e-Stat）｜<br>
-  データソース: 経産省DX推進調査・総務省情報通信白書2025・McKinsey Global AI Survey 2025・矢野経済研究所・IDC Japan ｜<br>
-  予測: Google TimesFM（github.com/google-research/timesfm）参考実装 ｜ 本情報は意思決定の参考資料です
 </div>
 
 <!-- FOOTER -->
@@ -2002,7 +2005,30 @@ document.addEventListener('DOMContentLoaded', function(){
     });
   // Sprint 2: 認証初期化
   initAuth();
+  // スクロールスパイ
+  initScrollSpy();
 });
+
+function initScrollSpy(){
+  var sectionIds = ['sec-overview','sec-industries','sec-timefm','sec-recommend','sec-avoid'];
+  var tabs = document.querySelectorAll('.topbar-tabs .topbar-tab');
+  if(!tabs.length) return;
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        var idx = sectionIds.indexOf(entry.target.id);
+        if(idx !== -1){
+          tabs.forEach(function(t){ t.classList.remove('on'); });
+          if(tabs[idx]) tabs[idx].classList.add('on');
+        }
+      }
+    });
+  },{threshold:0.25, rootMargin:'-56px 0px -40% 0px'});
+  sectionIds.forEach(function(id){
+    var el = document.getElementById(id);
+    if(el) observer.observe(el);
+  });
+}
 </script>
 
 <!-- ══ Auth Modal (Sprint 2) ══ -->
