@@ -38,8 +38,8 @@
   --shadow:     0 4px 6px rgba(15,23,42,.07),0 2px 4px rgba(15,23,42,.06);
   --shadow-lg:  0 10px 25px rgba(15,23,42,.10),0 4px 10px rgba(15,23,42,.06);
   /* Typography */
-  --f-head: 'Helvetica Neue','Arial Black','Hiragino Kaku Gothic ProN','Yu Gothic','Meiryo',-apple-system,sans-serif;
-  --f-body: 'Hiragino Kaku Gothic ProN','Hiragino Sans','Yu Gothic','Meiryo',-apple-system,sans-serif;
+  --f-head: 'Meiryo UI','Meiryo','Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif;
+  --f-body: 'Meiryo','Meiryo UI','Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif;
   --f-mono: 'SF Mono','Consolas','Menlo',monospace;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -480,11 +480,11 @@ tr:hover td{background:var(--surface2)}
     </div>
   </div>
   <div class="topbar-tabs">
-    <button class="topbar-tab on" onclick="scrollTo('sec-overview')">概要</button>
-    <button class="topbar-tab" onclick="scrollTo('sec-industries')">業界詳細</button>
-    <button class="topbar-tab" onclick="scrollTo('sec-timefm')">TimesFM予測</button>
-    <button class="topbar-tab" onclick="scrollTo('sec-recommend')">推奨ターゲット</button>
-    <button class="topbar-tab" onclick="scrollTo('sec-avoid')">回避市場</button>
+    <button class="topbar-tab on" onclick="scrollToSection('sec-overview',this)">概要</button>
+    <button class="topbar-tab" onclick="scrollToSection('sec-industries',this)">業界詳細</button>
+    <button class="topbar-tab" onclick="scrollToSection('sec-timefm',this)">TimesFM予測</button>
+    <button class="topbar-tab" onclick="scrollToSection('sec-recommend',this)">推奨ターゲット</button>
+    <button class="topbar-tab" onclick="scrollToSection('sec-avoid',this)">回避市場</button>
   </div>
   <div class="topbar-meta">
     <span><span class="live-dot"></span>LIVE</span>
@@ -512,7 +512,7 @@ tr:hover td{background:var(--surface2)}
     <a class="s-link" data-filter="important" onclick="filterCards('important',this)">
       <span class="s-dot" style="background:var(--orange)"></span>
       🔶 早急参入（2028末）
-      <span class="s-count" style="background:var(--orange-lt);color:var(--orange)">5</span>
+      <span class="s-count" style="background:var(--orange-lt);color:var(--orange)">8</span>
     </a>
     <a class="s-link" data-filter="normal" onclick="filterCards('normal',this)">
       <span class="s-dot" style="background:var(--primary)"></span>
@@ -841,566 +841,15 @@ tr:hover td{background:var(--surface2)}
 
 <script>
 /* ====================================================
-   DATA — 日本標準産業分類（e-Stat）準拠
+   DATA — data/markets.json から読み込み（軽量分離）
+   日本標準産業分類（e-Stat）準拠
    ==================================================== */
-var INDUSTRIES = [
-  {
-    id:'kaigo', estat:'P', estatName:'医療、福祉', name:'介護・福祉事業者',
-    color:'#059669', priority:'critical', score:96,
-    pen:8, market:11.2, workers:210, aiEng:120, aiEngDensity:0.006,
-    roi:3200, perUnitROI:2400, payback:'8ヶ月',
-    types:['音声AI','エージェント','画像AI','最適化AI'],
-    pains:['記録業務1日平均2.3時間消費','夜間見守り人員確保困難','ケアプラン作成の専門家工数大','離職率30%超・採用コスト増大'],
-    solutions:[
-      {name:'音声介護記録AI', type:'音声AI', eff:'記録時間60%削減'},
-      {name:'AIケアプラン自動生成', type:'エージェント', eff:'CM工数40%削減'},
-      {name:'転倒・異常検知AIカメラ', type:'ループAI', eff:'夜間事故50%削減'},
-      {name:'シフト最適化AI', type:'施策AI', eff:'残業20%削減'},
-    ],
-    before:'手書き・PC入力で記録。夜勤は2人体制必須。ケアマネが紙ベース管理',
-    after:'音声→自動整形。AIカメラで1人夜勤可能。ケアプランAI初稿生成→専門家確認のみ',
-    bestTarget:'地域中規模複合型介護事業者（全国約2,800法人）',
-    news:['厚労省：2025年度 介護DX補助金 最大500万円/事業所','大阪市 音声AI介護記録実証 → 記録時間65%削減（2025.3）','SOMPOケア×Fujitsu AIケアプラン共同開発（2025）'],
-    timefm:{act:[3,4,5,6,7,8],fore:[10,13,18,24,31,38]},
-    f2028:18, f2032:38, deadline:'2027年末',
-    accel:'介護DX補助金・人手不足深刻化・規制緩和（ICT活用で人員基準緩和）',
-    block:'現場ITリテラシー低・初期費用・保守的な理事長判断',
-    usaPen:35, globalPen:22,
-    subsidies:[{name:'介護DX推進補助金', amount:'最大500万円/事業所', org:'厚労省', deadline:'2026年度末'}],
-    entrySteps:['補助金申請サポート（無償）＋音声記録AIの3ヶ月無償トライアル','効果測定レポートを理事長に提出し有償SaaS契約（月12万）','系列・近隣法人への横展開で施設数を積み上げ'],
-    risks:{regulation:2, competition:1, technology:1, adoption:4, privacy:3},
-    revenueModel:'SaaS月額（12万/施設）', timeToRevenue:'5ヶ月',
-    scenario:{opt:[12,17,25,34,44,54], base:[10,13,18,24,31,38], pes:[8,10,13,17,21,26]},
-  },
-  {
-    id:'houritu', estat:'L', estatName:'学術研究、専門・技術サービス業', name:'法律事務所・法務部門',
-    color:'#7C3AED', priority:'critical', score:90,
-    pen:10, market:3.8, workers:45, aiEng:68, aiEngDensity:0.151,
-    roi:2100, perUnitROI:3600, payback:'6ヶ月',
-    types:['agent'],
-    pains:['契約書レビュー1件平均4.2時間','判例調査に膨大な工数','中小企業のリーガルコスト高','コンプライアンスチェックの属人化'],
-    solutions:[
-      {name:'契約書レビューAI（GPT-4o + RAG）', type:'RAG', eff:'レビュー工数75%削減'},
-      {name:'AI判例・法令検索エージェント', type:'RAG', eff:'調査時間60%削減'},
-      {name:'中小企業向けリーガルAI SaaS', type:'生成AI', eff:'法務コスト50%削減'},
-    ],
-    before:'弁護士が目視で条文確認。中小企業は法律リスクを放置。判例調査は人力',
-    after:'AI秒速でリスク条項特定・代替案提示。中小企業がAIで自社審査可能に',
-    bestTarget:'地方中堅法律事務所5〜30名規模（全国約9,000所）',
-    news:['弁護士ドットコム「CLOUDSIGN」AI機能拡張（2025年）','HarveyAI 日本語対応・国内事務所採用開始（2025年）','日弁連 AI利用ガイドライン発表（2025.4）'],
-    timefm:{act:[4,5,6,8,9,10],fore:[13,17,23,30,37,43]},
-    f2028:23, f2032:43, deadline:'2027年末',
-    accel:'ChatGPT普及・HarveyAI上陸・業務効率化需要',
-    block:'守秘義務・日弁連保守的対応・日本語法律データ不足',
-    usaPen:42, globalPen:28,
-    subsidies:[{name:'IT導入補助金2025（デジタル化基盤）', amount:'最大150万円', org:'経産省', deadline:'2026年3月'}],
-    entrySteps:['無償の契約書レビューAIデモで「驚き体験」を提供','30日トライアル後に月額契約（15万）→ 既存顧問企業へのリーガルAI提供で付加価値化','弁護士会研修・セミナーで横展開'],
-    risks:{regulation:3, competition:2, technology:1, adoption:2, privacy:4},
-    revenueModel:'SaaS月額（20万/事務所）', timeToRevenue:'3ヶ月',
-    scenario:{opt:[16,22,30,40,50,58], base:[13,17,23,30,37,43], pes:[10,13,17,22,27,32]},
-  },
-  {
-    id:'clinic', estat:'P', estatName:'医療、福祉', name:'クリニック・診療所',
-    color:'#EC4899', priority:'critical', score:85,
-    pen:14, market:8.5, workers:120, aiEng:95, aiEngDensity:0.079,
-    roi:2800, perUnitROI:1200, payback:'9ヶ月',
-    types:['RAG','エージェント','生成AI'],
-    pains:['電子カルテ入力に診察時間30%消費','予約管理・リマインドが電話のみ','レセプト作業が月末に集中','患者の待ち時間問題'],
-    solutions:[
-      {name:'診察音声AI自動カルテ記録', type:'音声AI', eff:'カルテ記録70%削減'},
-      {name:'AI予約・リマインドシステム', type:'施策AI', eff:'無断キャンセル50%削減'},
-      {name:'レセプトAI自動チェック', type:'RPA', eff:'レセプトエラー80%削減'},
-    ],
-    before:'医師が診察中に手入力でカルテ記録。予約は電話のみ。月末はレセプトで残業常態化',
-    after:'医師の発話をAIが自動カルテ化。LINE予約・AIが前日リマインド。AIがレセプトエラーを事前検出',
-    bestTarget:'開業医・地域クリニック（全国約105,000診療所）',
-    news:['JMDC×Ubie 問診AI 国内3,500クリニック導入（2025.6）','厚労省：診察音声認識AI「医師の働き方改革」推進策に明記','SOKENアシスト「AI医師秘書」月額3万円で提供開始（2025）'],
-    timefm:{act:[6,8,10,12,13,14],fore:[17,22,28,34,40,45]},
-    f2028:28, f2032:45, deadline:'2027年末',
-    accel:'医師の働き方改革（2024年施行）・電子カルテ普及・診療DX補助金',
-    block:'患者データセキュリティ規制・高齢患者のデジタル拒否感',
-    usaPen:48, globalPen:32,
-    subsidies:[{name:'医療DX推進補助金', amount:'最大200万円/施設', org:'厚労省', deadline:'2026年度末'},{name:'IT導入補助金', amount:'最大150万円', org:'経産省', deadline:'2026年3月'}],
-    entrySteps:['電子カルテ会社と提携し既存ユーザーへバンドル提案','院長向け「残業時間削減レポート」を毎月提出し継続率向上','地域医師会での勉強会を主催し横展開'],
-    risks:{regulation:3, competition:2, technology:1, adoption:2, privacy:4},
-    revenueModel:'SaaS月額（9.5万/施設）', timeToRevenue:'4ヶ月',
-    scenario:{opt:[20,28,36,44,52,58], base:[17,22,28,34,40,45], pes:[12,15,19,24,29,34]},
-  },
-  {
-    id:'kensetsu', estat:'D', estatName:'建設業', name:'中小建設会社',
-    color:'#2563EB', priority:'important', score:88,
-    pen:12, market:62, workers:500, aiEng:380, aiEngDensity:0.076,
-    roi:8200, perUnitROI:1800, payback:'11ヶ月',
-    types:['エージェント','画像AI','最適化AI'],
-    pains:['熟練技術者の引退・技術継承困難','施工図面が紙・CAD管理でバラバラ','安全管理の属人化','工程管理がExcel依存'],
-    solutions:[
-      {name:'施工管理AIエージェント', type:'エージェント', eff:'管理工数35%削減'},
-      {name:'AI図面自動解析・積算', type:'エージェント', eff:'積算時間60%短縮'},
-      {name:'AIカメラ安全管理', type:'画像AI', eff:'事故件数40%削減'},
-      {name:'工程自動最適化AI', type:'ループAI', eff:'工期遅延20%改善'},
-    ],
-    before:'ベテランの勘に依存する施工管理。図面は担当者PCに個別保存。安全確認は目視のみ',
-    after:'AIが図面読取・数量自動算出。カメラが常時安全確認・即アラート。工程はAIが最適化提案',
-    bestTarget:'年商5〜50億円規模の地域中小建設会社（全国約38,000社）',
-    news:['国交省：建設DX推進プログラム2025〜2027（補助率1/2）','中小建設 DX実施率わずか9%（2025年中小企業白書）','2024年問題（残業規制）でDX必要性急増'],
-    timefm:{act:[5,6,8,10,11,12],fore:[15,19,24,30,37,44]},
-    f2028:24, f2032:44, deadline:'2028年末',
-    accel:'建設DX補助金・2024年残業規制・受注管理デジタル義務化検討',
-    block:'元請指定のシステム強制・現場作業員のスマホ操作不慣れ',
-    usaPen:38, globalPen:24,
-    subsidies:[{name:'建設業DX推進補助金', amount:'最大300万円（補助率1/2）', org:'国交省', deadline:'2026年度末'}],
-    entrySteps:['安全管理AIカメラを「事故削減保証」付きで無償設置（3ヶ月）','事故削減・工期短縮のデータを元請に報告書として提出','元請経由でグループ下請け20社への横展開を依頼'],
-    risks:{regulation:2, competition:2, technology:2, adoption:3, privacy:1},
-    revenueModel:'SaaS月額（33万/社）＋初期導入費', timeToRevenue:'6ヶ月',
-    scenario:{opt:[18,24,32,40,48,55], base:[15,19,24,30,37,44], pes:[11,14,18,22,27,32]},
-  },
-  {
-    id:'gyousei', estat:'S', estatName:'公務（他に分類されるものを除く）', name:'地方自治体・行政',
-    color:'#06B6D4', priority:'important', score:78,
-    pen:18, market:24, workers:330, aiEng:420, aiEngDensity:0.127,
-    roi:4800, perUnitROI:900, payback:'24ヶ月',
-    types:['チャットボット','RPA','生成AI'],
-    pains:['申請書類が紙・FAX・郵送','住民対応が電話・窓口に集中','縦割り行政でデータ連携不能','職員の残業が常態化'],
-    solutions:[
-      {name:'住民対応AIチャットボット', type:'チャットボット', eff:'問い合わせ40%自動化'},
-      {name:'申請書類AI-OCR自動処理', type:'RPA', eff:'処理時間50%短縮'},
-      {name:'自治体業務RPAエージェント', type:'最適化AI', eff:'定型業務60%削減'},
-    ],
-    before:'窓口に行列、紙の申請書を職員が手入力。問い合わせ電話が1日300件。部署間共有はFAX',
-    after:'AIチャットが24時間対応。OCRで自動入力。申請AIが必要書類を案内・自動受付',
-    bestTarget:'人口5〜30万人規模の地方自治体（全国約1,400自治体）',
-    news:['デジタル庁：自治体AI活用ガイドライン2025改訂版','浜松市・川崎市 生成AI全庁導入で問合せ30%削減（2025）','デジタル行財政改革 自治体DX交付金 拡充（2025年度）'],
-    timefm:{act:[10,12,14,15,17,18],fore:[22,26,31,36,41,46]},
-    f2028:31, f2032:46, deadline:'2028年末',
-    accel:'デジタル庁主導・DX交付金・2040年職員不足予測',
-    block:'情報セキュリティ規制・ベンダーロックイン・調達プロセスの長期化',
-    usaPen:52, globalPen:38,
-    subsidies:[{name:'デジタル田園都市国家構想交付金', amount:'上限なし（実績ベース）', org:'デジタル庁', deadline:'随時'},{name:'自治体DX推進計画補助金', amount:'最大1,000万円', org:'総務省', deadline:'2027年3月'}],
-    entrySteps:['デジタル庁ガイドライン準拠のセキュリティ要件を先に整備（差別化）','小規模自治体（人口3〜5万人）をパイロットとして実績をつくる','「◯◯市 住民満足度XX%向上」の事例で中規模自治体へ横展開'],
-    risks:{regulation:4, competition:3, technology:1, adoption:2, privacy:5},
-    revenueModel:'年間ライセンス＋保守（1,200万/自治体）', timeToRevenue:'18ヶ月',
-    scenario:{opt:[28,34,40,46,52,57], base:[22,26,31,36,41,46], pes:[16,19,23,27,31,36]},
-  },
-  {
-    id:'nogyou', estat:'A', estatName:'農業、林業', name:'農業（中小農家・農業法人）',
-    color:'#D97706', priority:'important', score:74,
-    pen:15, market:5.2, workers:215, aiEng:90, aiEngDensity:0.042,
-    roi:1800, perUnitROI:320, payback:'18ヶ月',
-    types:['画像AI','予測AI','施策AI'],
-    pains:['農家の高齢化（平均年齢68歳）・後継者不足','気候変動による収穫量の不安定化','病害虫の目視確認・農薬散布の非効率','販路がJA依存で収益低い'],
-    solutions:[
-      {name:'病害虫AI早期検知（スマホ撮影）', type:'画像AI', eff:'農薬コスト30%削減'},
-      {name:'収穫量予測AI（気象+土壌）', type:'ループAI', eff:'廃棄ロス25%削減'},
-      {name:'精密農業 ドローンAI', type:'ループAI', eff:'作業工数40%削減'},
-    ],
-    before:'経験則による農薬散布・収穫判断。JAへの一括出荷で価格決定権なし。後継者への技術継承困難',
-    after:'AIが病気早期発見・最適農薬量指示。気象AIが1ヶ月先の収穫量を予測。ドローンが農薬自動散布',
-    bestTarget:'経営面積2〜20ha 中小農家・農業法人（全国約100万経営体）',
-    news:['農水省：スマート農業実装推進事業2025（補助率3/4）','クボタ「アグリロボシリーズ」2025年売上150%増','農業IoT市場 2026年1,200億円規模（富士キメラ総研）'],
-    timefm:{act:[8,10,11,13,14,15],fore:[18,22,27,32,37,42]},
-    f2028:27, f2032:42, deadline:'2028年末',
-    accel:'スマート農業補助金・農業法人化促進・食料安保政策',
-    block:'高齢農家のデジタルリテラシー・圃場多様性（学習データ不足）',
-    usaPen:45, globalPen:30,
-    subsidies:[{name:'スマート農業実装推進事業', amount:'補助率3/4（上限500万）', org:'農水省', deadline:'2026年度末'}],
-    entrySteps:['農業法人・JAとパートナー契約し代理販売チャネル確立','病害虫AIをスマホアプリで無償配布→有料プラン（収穫予測・ドローン）にアップセル','農水省スマート農業実証拠点と共同研究で信頼性確立'],
-    risks:{regulation:1, competition:2, technology:2, adoption:4, privacy:1},
-    revenueModel:'フリーミアム（基本無料＋月額0.8万〜）', timeToRevenue:'8ヶ月',
-    scenario:{opt:[22,28,35,42,49,56], base:[18,22,27,32,37,42], pes:[13,16,20,24,28,33]},
-  },
-  {
-    id:'suisan', estat:'B', estatName:'漁業', name:'沿岸漁業・漁業協同組合',
-    color:'#6366F1', priority:'important', score:70,
-    pen:8, market:1.8, workers:15, aiEng:18, aiEngDensity:0.012,
-    roi:420, perUnitROI:180, payback:'20ヶ月',
-    types:['予測AI','画像AI','コンサルAI'],
-    pains:['漁獲量予測が経験則のみ','漁師の高齢化・後継者不在','鮮度管理・流通の非効率','漁場情報の共有なし'],
-    solutions:[
-      {name:'海洋データAI漁場予測', type:'予測AI', eff:'燃料コスト20%削減'},
-      {name:'AI鮮度センサー管理', type:'画像AI', eff:'廃棄ロス30%削減'},
-      {name:'水産物AI直販プラットフォーム', type:'コンサルAI', eff:'収益25%向上'},
-    ],
-    before:'ベテラン漁師の感覚で漁場を決定。魚市場への一括出荷で価格決定不可',
-    after:'衛星データ+AIで最適漁場を前日予測。センサーで鮮度リアルタイム管理。消費者に直接販売',
-    bestTarget:'沿岸漁業・漁業協同組合（全国約950漁協）',
-    news:['水産庁：スマート水産業推進事業2025（補助率2/3）','NTT×漁業組合 海洋AIデータプラットフォーム実証（三陸・2025）'],
-    timefm:{act:[3,4,5,6,7,8],fore:[11,14,18,23,28,33]},
-    f2028:18, f2032:33, deadline:'2029年末',
-    accel:'水産DX補助金・漁獲量減少危機意識・海洋データ整備',
-    block:'海上でのネット接続困難・漁業コミュニティの閉鎖性',
-    usaPen:28, globalPen:18,
-    subsidies:[{name:'スマート水産業推進事業', amount:'補助率2/3（上限200万）', org:'水産庁', deadline:'2026年度末'}],
-    entrySteps:['漁協組合長へ「燃料費削減」訴求でデモ実施（漁業者は燃料費が最大コスト）','実証実験を共同プレスリリースで発信→他漁協からの問い合わせを獲得','水産庁スマート水産業実証事業に申請し公的認知度を上げる'],
-    risks:{regulation:2, competition:1, technology:3, adoption:3, privacy:1},
-    revenueModel:'月額SaaS（2.3万/漁協）＋成果報酬', timeToRevenue:'10ヶ月',
-    scenario:{opt:[14,19,25,31,37,43], base:[11,14,18,23,28,33], pes:[8,10,13,16,20,24]},
-  },
-  {
-    id:'chusho', estat:'R', estatName:'サービス業（他に分類されないもの）', name:'中小サービス業全般',
-    color:'#F59E0B', priority:'important', score:80,
-    pen:9, market:45, workers:1280, aiEng:510, aiEngDensity:0.040,
-    roi:12000, perUnitROI:480, payback:'12ヶ月',
-    types:['RPA','エージェント','予測AI'],
-    pains:['人手不足で採用コスト高騰','請求書・経費精算が紙・手作業','顧客管理がExcel・ノート（属人化）','新人教育に先輩社員の工数大'],
-    solutions:[
-      {name:'バックオフィスAI自動化', type:'RPA', eff:'経理工数50%削減'},
-      {name:'AI顧客管理・商談支援', type:'エージェント', eff:'営業効率30%向上'},
-      {name:'AI新人教育・社内FAQ', type:'エージェント', eff:'研修工数40%削減'},
-    ],
-    before:'社長が会計・営業・採用を兼任。請求書は手書きorExcel。新人は先輩に張り付いて学習',
-    after:'AIがレシート読取→会計自動仕訳。AIが商談記録→次アクションを自動提案。社内ナレッジAIが質問に即答',
-    bestTarget:'従業員5〜50名の地域サービス業（全国約280万社）',
-    news:['freee×ChatGPT 会計AI 中小企業向け月額1万円以下で提供','マネーフォワード 請求書AI 読取精度98%達成（2025）','中小企業庁：IT補助金2025 AI関連ツール 最大150万円補助'],
-    timefm:{act:[4,5,6,7,8,9],fore:[12,16,21,27,33,39]},
-    f2028:21, f2032:39, deadline:'2028年末',
-    accel:'IT補助金・会計SaaS AI機能標準化・ChatGPT認知度向上',
-    block:'「AIは大企業のもの」という誤解・費用対効果の見えにくさ',
-    usaPen:38, globalPen:26,
-    subsidies:[{name:'IT導入補助金2025', amount:'最大150万円（補助率1/2）', org:'経産省', deadline:'2026年3月'},{name:'小規模事業者持続化補助金', amount:'最大200万円', org:'中小企業庁', deadline:'随時'}],
-    entrySteps:['freee/マネーフォワードのAPI連携でバックオフィスAIを既存SaaS上に乗せる','IT導入補助金の申請代行サービスをセットにして「ゼロ円導入」を訴求','商工会議所・TKC・税理士経由の紹介チャネルを構築'],
-    risks:{regulation:1, competition:3, technology:1, adoption:3, privacy:2},
-    revenueModel:'SaaS月額（1.5万/社）×大量獲得', timeToRevenue:'3ヶ月',
-    scenario:{opt:[16,21,28,35,42,49], base:[12,16,21,27,33,39], pes:[8,11,14,18,22,27]},
-  },
-  {
-    id:'ringyou', estat:'A', estatName:'農業、林業', name:'林業事業体',
-    color:'#10B981', priority:'normal', score:65,
-    pen:5, market:0.5, workers:4.5, aiEng:8, aiEngDensity:0.018,
-    roi:180, perUnitROI:90, payback:'24ヶ月',
-    types:['画像AI','最適化AI','施策AI'],
-    pains:['木材資源量の把握に人力調査が必要','伐採計画・搬出ルートの非効率','作業員の事故が多い（急傾斜・倒木）','木材価格の見通し立てにくい'],
-    solutions:[
-      {name:'ドローン×AI 森林資源調査', type:'画像AI', eff:'調査コスト70%削減'},
-      {name:'AI伐採計画・搬出最適化', type:'最適化AI', eff:'作業工数30%削減'},
-      {name:'林業安全AIウェアラブル', type:'施策AI', eff:'事故件数40%削減'},
-    ],
-    before:'山に入って人力で木の本数・太さを計測。伐採計画は経験則。搬入ルートは職人の感覚',
-    after:'ドローンが森全体をスキャン→AIが資源量・樹種・状態を自動算出。AIが最適伐採順序・搬出ルートを提案',
-    bestTarget:'林業事業体（全国約8,400社、民有林管理法人）',
-    news:['林野庁：林業DX推進プログラム2025（補助率3/4）','航空レーザー計測×AI 森林GIS整備が全国展開（2025年）'],
-    timefm:{act:[2,3,3,4,5,5],fore:[7,10,13,17,21,25]},
-    f2028:13, f2032:25, deadline:'2030年末',
-    accel:'林業DX補助金・ドローン規制緩和（2025年）・国産材需要増',
-    block:'山間部での電波・GPS精度問題・事業体規模が小さすぎる',
-    usaPen:22, globalPen:14,
-    subsidies:[{name:'林業DX推進補助金', amount:'補助率3/4（上限150万）', org:'林野庁', deadline:'2026年度末'}],
-    entrySteps:['都道府県の林業事業体連合会にパートナー申請し一括代理販売','ドローン点検AIと安全ウェアラブルのセット（月6万）で参入','林野庁の「スマート林業構築推進事業」の採択実績を取得し信頼性確立'],
-    risks:{regulation:2, competition:1, technology:3, adoption:4, privacy:1},
-    revenueModel:'月額SaaS（6万/社）＋ドローン点検スポット', timeToRevenue:'12ヶ月',
-    scenario:{opt:[10,14,19,24,30,36], base:[7,10,13,17,21,25], pes:[5,7,9,12,15,18]},
-  },
-  {
-    id:'shukyou', estat:'N', estatName:'生活関連サービス業、娯楽業', name:'宗教法人・葬儀業',
-    color:'#94A3B8', priority:'normal', score:60,
-    pen:3, market:2.2, workers:22, aiEng:4, aiEngDensity:0.002,
-    roi:380, perUnitROI:120, payback:'30ヶ月',
-    types:['エージェント','コンサルAI','施策AI'],
-    pains:['檀家・会員管理がノート・カード','葬儀式典の段取り管理が属人化','少子高齢化で寺院・神社の収入減少','後継者なし・住職の高齢化'],
-    solutions:[
-      {name:'檀家・会員AI管理システム', type:'施策AI', eff:'事務工数40%削減'},
-      {name:'葬儀式典AIプランニング', type:'エージェント', eff:'段取り工数30%削減'},
-      {name:'寺院×AI遺産・相続相談', type:'エージェント', eff:'付加価値サービス創出'},
-    ],
-    before:'檀家台帳は紙の帳面。葬儀担当者が当日まで段取りを頭の中で管理。収入は法事・葬儀のみ',
-    after:'AIが檀家情報を一元管理・法事自動リマインド。葬儀AIが式典タイムライン自動生成',
-    bestTarget:'地域寺院・神社・葬儀社（全国寺院77,000 / 葬儀社26,000）',
-    news:['葬儀AIプランニング「むすびび」葬儀社800社に導入（2025）','寺院DXコンソーシアム設立 → AI檀家管理システム共同開発'],
-    timefm:{act:[1,1,2,2,3,3],fore:[4,6,9,12,16,20]},
-    f2028:9, f2032:20, deadline:'2030年末',
-    accel:'高齢化による需要増・後継者問題危機感・葬儀スタートアップの啓発',
-    block:'伝統・格式重視・「AIに宗教は馴染まない」という抵抗感',
-    usaPen:8, globalPen:5,
-    subsidies:[{name:'小規模事業者持続化補助金', amount:'最大200万円', org:'中小企業庁', deadline:'随時'}],
-    entrySteps:['全日本葬祭業協同組合連合会・寺院DXコンソーシアムへ加盟し信頼獲得','「後継者不在解決」「収益多様化」の文脈でアプローチ（AIより先にDX訴求）','成功寺院・葬儀社の事例を業界誌・住職コミュニティで拡散'],
-    risks:{regulation:1, competition:1, technology:1, adoption:5, privacy:2},
-    revenueModel:'SaaS月額（0.8万/施設）＋相談サービス課金', timeToRevenue:'14ヶ月',
-    scenario:{opt:[7,10,14,18,23,28], base:[4,6,9,12,16,20], pes:[3,4,6,8,10,13]},
-  },
-  {
-    id:'craft', estat:'E', estatName:'製造業（伝統工芸）', name:'伝統工芸・職人技術産地',
-    color:'#F97316', priority:'normal', score:55,
-    pen:3, market:0.9, workers:6, aiEng:5, aiEngDensity:0.008,
-    roi:140, perUnitROI:60, payback:'36ヶ月',
-    types:['エージェント','RAG','サイト制作AI'],
-    pains:['職人の技術・ノウハウが口伝のみで消滅リスク','海外販路開拓ができていない','ECへの移行が進まず収益が低い','後継者育成に10年以上かかる'],
-    solutions:[
-      {name:'職人技術AI動画解析・ドキュメント化', type:'エージェント', eff:'技術継承コスト60%削減'},
-      {name:'伝統工芸多言語AI EC自動化', type:'サイト制作AI', eff:'海外売上200%増'},
-      {name:'AI職人見習い育成プログラム', type:'エージェント', eff:'習得期間30%短縮'},
-    ],
-    before:'師匠の動きを何年も見て学ぶのみ。海外は百貨店バイヤー経由のみ。製品の9割が国内市場',
-    after:'AIが職人の動作・判断を解析→デジタル教材化。AIが多言語でEC自動翻訳・海外展開',
-    bestTarget:'伝統工芸産地の工房・組合（全国234品目の産地）',
-    news:['文化庁：伝統工芸デジタルアーカイブ事業2025年度開始','有田焼AI輸出マッチング 海外販売3倍増（2025年事例）'],
-    timefm:{act:[1,1,2,2,3,3],fore:[4,6,8,11,14,17]},
-    f2028:8, f2032:17, deadline:'2030年末',
-    accel:'インバウンド需要増・クールジャパン政策・職人高齢化による危機感',
-    block:'「AIで魂が失われる」という職人の価値観・超少量生産でROIが低い',
-    usaPen:6, globalPen:4,
-    subsidies:[{name:'伝統的工芸品産業振興補助金', amount:'最大100万円', org:'経産省', deadline:'随時'},{name:'文化庁デジタルアーカイブ支援', amount:'実費補助', org:'文化庁', deadline:'随時'}],
-    entrySteps:['地元商工会議所・産地組合経由で「海外販路開拓」の文脈で提案（AIより先に売上増訴求）','有田焼・京都西陣・益子焼など著名産地での成功事例を早期に作る','越境ECプラットフォームとセット提案（AIが商品説明を多言語自動生成）'],
-    risks:{regulation:1, competition:1, technology:1, adoption:5, privacy:1},
-    revenueModel:'成功報酬型（海外売上の10%）＋月額SaaS', timeToRevenue:'16ヶ月',
-    scenario:{opt:[6,9,13,17,21,26], base:[4,6,8,11,14,17], pes:[2,3,5,7,9,12]},
-  },
-  {
-    id:'npo', estat:'O', estatName:'教育、学習支援業', name:'NPO・社会教育団体',
-    color:'#22D3EE', priority:'normal', score:62,
-    pen:7, market:1.2, workers:38, aiEng:25, aiEngDensity:0.066,
-    roi:320, perUnitROI:80, payback:'18ヶ月',
-    types:['生成AI','RPA','エージェント'],
-    pains:['補助金申請書類作成に膨大な工数','ボランティア・スタッフ管理がExcel','インパクト測定・報告書作成が大変','IT予算ゼロ'],
-    solutions:[
-      {name:'補助金申請AIドラフト自動生成', type:'生成AI', eff:'申請工数70%削減'},
-      {name:'ボランティア管理AIシステム', type:'施策AI', eff:'管理工数50%削減'},
-      {name:'インパクト測定・報告書AI', type:'エージェント', eff:'報告書作成80%削減'},
-    ],
-    before:'補助金申請書を職員が1ヶ月かけて作成。ボランティアシフトはLINE+Excel。年次報告書に数週間',
-    after:'AIが過去採択事例を学習→申請書ドラフトを30分で作成。AIがボランティア自動マッチング',
-    bestTarget:'中間支援NPO・社会福祉協議会（全国NPO法人約5万団体）',
-    news:['内閣府：NPO法人 デジタル化支援プログラム2025','Google for Nonprofits AI機能追加','NPO×AI補助金申請ツール「impactAI」リリース（2025年）'],
-    timefm:{act:[3,4,4,5,6,7],fore:[9,12,16,20,25,30]},
-    f2028:16, f2032:30, deadline:'2030年末',
-    accel:'Google Workspace 非営利無料提供・ChatGPT無料層の活用急増',
-    block:'IT予算ゼロ・組織の意思決定の遅さ',
-    usaPen:18, globalPen:12,
-    subsidies:[{name:'NPO法人運営力強化補助金', amount:'最大50万円', org:'内閣府', deadline:'随時'},{name:'Google for Nonprofits', amount:'Workspace無償提供', org:'Google', deadline:'随時'}],
-    entrySteps:['補助金申請AIを「完全無償」で提供し信頼を獲得（初期マネタイズなし）','NPO支援財団・中間支援組織に一括導入し一気に数百NPOへリーチ','有償プランは報告書AI・インパクト測定のみ（月3万）に絞ってシンプル化'],
-    risks:{regulation:1, competition:1, technology:1, adoption:3, privacy:2},
-    revenueModel:'フリーミアム（基本無料＋月額3万）', timeToRevenue:'12ヶ月',
-    scenario:{opt:[13,18,24,30,37,44], base:[9,12,16,20,25,30], pes:[6,8,11,14,17,21]},
-  },
-  {
-    id:'fudosan', estat:'K', estatName:'不動産業、物品賃貸業', name:'中小不動産会社（仲介・賃貸管理）',
-    color:'#0EA5E9', priority:'important', score:75,
-    pen:15, market:45, workers:360, aiEng:280, aiEngDensity:0.0008,
-    roi:1200, perUnitROI:180, payback:'12ヶ月',
-    types:['チャットボット','サイト制作AI','予測AI','生成AI'],
-    pains:['物件情報をSUUMO・HOMES等に個別手入力（二重三重作業）','重要事項説明書・契約書が全て手作業','問い合わせが営業時間外のLINE・メールに集中','家賃査定が担当者の経験則のみ（相場把握が遅れる）'],
-    solutions:[
-      {name:'物件情報AI自動生成・マルチ掲載', type:'サイト制作AI', eff:'掲載工数70%削減'},
-      {name:'AIチャットボット内覧予約・FAQ', type:'チャットボット', eff:'問い合わせ60%自動化'},
-      {name:'AI家賃査定・需要予測', type:'予測AI', eff:'成約率20%向上'},
-      {name:'契約書類AI自動ドラフト', type:'生成AI', eff:'書類作成80%削減'},
-    ],
-    before:'担当者が物件写真を撮り、各ポータルに個別登録。重説は過去案件をコピペ修正。夜11時の問い合わせは翌朝対応',
-    after:'AI が写真から物件説明文を自動生成し全ポータルに一括掲載。チャットボットが24時間内覧予約を受付。AI査定で適正賃料を即提示',
-    bestTarget:'従業員5〜30名の地方中小不動産会社（全国約9.6万社）',
-    news:['国交省：不動産業DX推進プログラム2025〜2027','全国12万社の不動産業者のうちAI活用は1.8%のみ（2025年調査）','インバウンド需要回復で外国語対応ニーズが急増（2025）'],
-    timefm:{act:[6,8,10,12,14,15],fore:[20,26,32,38,44,50]},
-    f2028:32, f2032:50, deadline:'2028年末',
-    accel:'インバウンド需要・2024年不動産業DX推進計画・国交省ガイドライン整備',
-    block:'大手ポータル（SUUMO・HOMES）への依存・中小経営者のIT拒否感',
-    usaPen:42, globalPen:28,
-    subsidies:[{name:'IT導入補助金2025', amount:'最大150万円', org:'経産省', deadline:'2026年3月'},{name:'不動産DX推進補助金', amount:'最大200万円', org:'国交省', deadline:'2026年度末'}],
-    entrySteps:['物件掲載AI（PoC版）を地域の不動産組合経由で10社に無償提供','「掲載工数70%削減」の数値実績を組合ニュースレターで共有','組合員全体（地域100〜300社）へ月額SaaSとして横展開'],
-    risks:{regulation:2, competition:2, technology:1, adoption:3, privacy:2},
-    revenueModel:'SaaS月額（3.8万/社）', timeToRevenue:'4ヶ月',
-    scenario:{opt:[22,30,38,46,54,60], base:[20,26,32,38,44,50], pes:[14,18,22,27,32,37]},
-  },
-  {
-    id:'hotel', estat:'M', estatName:'宿泊業、飲食サービス業', name:'地方中小ホテル・旅館・飲食チェーン',
-    color:'#F59E0B', priority:'important', score:72,
-    pen:18, market:27, workers:4200, aiEng:180, aiEngDensity:0.000043,
-    roi:8400, perUnitROI:240, payback:'10ヶ月',
-    types:['チャットボット','予測AI','最適化AI','生成AI'],
-    pains:['インバウンド対応が英語・中国語できるスタッフ不足','食材廃棄ロスが売上の5〜8%（需要変動に対応できない）','シフト管理が手作業・毎月ギリギリ','口コミ返信・SNS投稿が後回しになり評価が下がる'],
-    solutions:[
-      {name:'多言語AI接客チャットボット', type:'チャットボット', eff:'インバウンド対応90%自動化'},
-      {name:'需要予測AI（食材発注・客数）', type:'予測AI', eff:'廃棄ロス40%削減'},
-      {name:'シフト最適化AI', type:'最適化AI', eff:'シフト作成工数60%削減'},
-      {name:'口コミ・SNS AI返信生成', type:'生成AI', eff:'評価向上・集客15%増'},
-    ],
-    before:'英語メニューなし・外国語スタッフなし。食材は経験で発注→大量廃棄。シフトは店長がExcelで毎月5時間。悪い口コミを放置',
-    after:'AIが英語・中国語・韓国語で24時間対応。天気・イベント・曜日から客数予測→食材発注を自動化。AIが好意的な口コミ返信を自動生成',
-    bestTarget:'客室数20〜100室の地方旅館・ホテル（全国約9,000件）、座席50〜200席の飲食チェーン',
-    news:['観光庁：インバウンド消費2025年過去最高更新（旅行消費額8.1兆円）','食品ロス削減促進法改正（2025年）：外食産業への廃棄削減義務','全国の旅館・ホテルの人手不足率が87%（旅館業界調査2025）'],
-    timefm:{act:[8,10,12,14,17,18],fore:[24,30,36,42,48,54]},
-    f2028:36, f2032:54, deadline:'2029年末',
-    accel:'インバウンド急増・食品ロス規制・人手不足対策補助金',
-    block:'オーナー経営者の高齢化・設備投資余力の不足・季節変動の大きさ',
-    usaPen:45, globalPen:30,
-    subsidies:[{name:'観光DX推進補助金', amount:'最大500万円', org:'観光庁', deadline:'2026年度末'},{name:'IT導入補助金', amount:'最大150万円', org:'経産省', deadline:'2026年3月'},{name:'食品ロス削減AI導入補助', amount:'最大100万円', org:'農水省', deadline:'2026年度末'}],
-    entrySteps:['観光庁のインバウンド対応補助金申請サポートを無償提供→多言語チャットボットを1施設に設置','繁忙期前（桜・紅葉・年末）の廃棄削減データを経営者に提示し有償契約','地域の観光協会・旅館組合経由で50施設への横展開'],
-    risks:{regulation:1, competition:3, technology:1, adoption:3, privacy:1},
-    revenueModel:'SaaS月額（5万/施設）＋従量課金', timeToRevenue:'5ヶ月',
-    scenario:{opt:[28,36,44,50,56,62], base:[24,30,36,42,48,54], pes:[16,21,26,31,37,42]},
-  },
-  {
-    id:'nokyo', estat:'Q', estatName:'複合サービス事業（農協・生協）', name:'JA農業協同組合・生活協同組合',
-    color:'#22C55E', priority:'important', score:68,
-    pen:10, market:8, workers:220, aiEng:15, aiEngDensity:0.000068,
-    roi:420, perUnitROI:280, payback:'18ヶ月',
-    types:['コンサルAI','予測AI','チャットボット','最適化AI'],
-    pains:['農家向け融資審査が担当者の経験則のみ（属人化・時間がかかる）','農産物の集荷量が天候に左右され需要予測が不可能','組合員2,000〜10,000人の管理がExcel・紙台帳','農薬・肥料の在庫管理が非効率（廃棄・欠品が頻発）'],
-    solutions:[
-      {name:'AI融資審査スコアリング', type:'コンサルAI', eff:'審査時間70%削減'},
-      {name:'農産物需要予測・集荷最適化AI', type:'予測AI', eff:'廃棄ロス30%削減'},
-      {name:'組合員対応AIチャットボット', type:'チャットボット', eff:'問い合わせ対応40%自動化'},
-      {name:'農薬・資材在庫最適化AI', type:'最適化AI', eff:'在庫コスト20%削減'},
-    ],
-    before:'融資審査は担当者がヒアリング→手書き書類→支店会議。農産物は毎年の経験値で集荷量を決定。組合員からの電話問い合わせを職員が全て対応',
-    after:'AIが農家の過去実績・土壌・天気データから融資審査を自動スコアリング。需要予測で集荷量を事前最適化。チャットボットが組合員の価格・手続き問い合わせに24時間対応',
-    bestTarget:'組合員1,000人以上のJA農協（全国約600組合）・大型生協（全国約100組合）',
-    news:['農林水産省：スマート農業実装プロジェクト2025〜2030（予算300億円）','JA全農：デジタル変革推進計画2025年発表（全国展開目標）','農業従事者の平均年齢68歳→後継者不足でDX需要急増'],
-    timefm:{act:[4,5,7,8,9,10],fore:[14,18,23,28,33,38]},
-    f2028:23, f2032:38, deadline:'2029年末',
-    accel:'農水省スマート農業予算・JA全農デジタル改革・後継者不足による効率化ニーズ',
-    block:'組合内の意思決定の遅さ（理事会承認が必要）・個人情報（農家の経営データ）の取り扱い',
-    usaPen:28, globalPen:18,
-    subsidies:[{name:'スマート農業実装推進事業', amount:'最大1,000万円', org:'農水省', deadline:'2026年度末'},{name:'農業DX加速化補助金', amount:'最大500万円', org:'農水省', deadline:'2027年3月'}],
-    entrySteps:['農水省スマート農業補助金の申請支援から入り信頼関係を構築','パイロット農協（小規模・改革派理事長の組合）で実証実験→農産物廃棄率データを取得','JA全農の推奨サービス認定を取得し全国600組合への展開ルートを確立'],
-    risks:{regulation:3, competition:1, technology:2, adoption:4, privacy:3},
-    revenueModel:'年間ライセンス（480万/組合）', timeToRevenue:'8ヶ月',
-    scenario:{opt:[16,22,28,34,39,44], base:[14,18,23,28,33,38], pes:[9,12,15,19,23,27]},
-  },
-];
-
-var AVOID_MARKETS = [
-  {id:'avoid-it',
-   name:'G: 情報通信業（IT・ソフトウェア）', pen:78, growth:'+18%/年', forecast2028:'88〜92%',
-   reasonTag:'AI専門人材が集中・差別化コスト10倍以上',
-   reason:'すでに飽和。AI専門人材が集中し、差別化コストが10倍以上。新規SaaS参入コスト ¥3〜10億円、LTVの確保が困難。',
-   risk:'2026年内に浸透率85%超見込み。生成AI APIコスト下落でコモディティ化加速中',
-   dominant:'Microsoft Azure AI / Google Cloud AI / AWS Bedrock（日本法人が全企業に提案済み）',
-   entryBudget:'¥3〜10億円（開発費） + AI人材採用 ¥2,000〜4,000万/人/年',
-   loseReason:'AIエンジニア採用競争で人件費が一般業界の3倍。GAFA系のAPIを使うだけで機能が代替される',
-   adjacent:'IT部門がない中小製造業・医療機関向けの「AI導入コンシェルジュ」サービス（参入難易度: 低）'},
-
-  {id:'avoid-finance',
-   name:'J: 金融業、保険業（FinTech）', pen:68, growth:'+15%/年', forecast2028:'82〜86%',
-   reasonTag:'メガバンク自社開発済み・規制対応コスト年間¥1〜3億',
-   reason:'メガバンク・大手保険が自社AI開発に数百億投資済み。規制対応コストが参入障壁になっている。',
-   risk:'金融庁AI規制対応コスト年間¥1〜3億/サービス。1度のシステム障害で行政処分リスク',
-   dominant:'三菱UFJ / SMBC / みずほ（自社AI開発完了） / 野村HD / 損保ジャパン',
-   entryBudget:'¥1〜5億円（開発費） + 規制対応（金融庁・FISCガイドライン準拠）に¥5,000万〜2億/年',
-   loseReason:'銀行・保険は自社セキュリティ基準が非常に厳しく、外部SaaSの審査に1〜3年かかる',
-   adjacent:'地方信用金庫・農業協同組合の融資審査AI支援（審査基準が緩く、補助金活用も可能）'},
-
-  {id:'avoid-ad',
-   name:'G: 情報通信業（広告・マーケティング）', pen:65, growth:'+38%/年 ⚠️急騰', forecast2028:'85〜90%',
-   reasonTag:'ChatGPT普及でAI化が爆発的進行・参入タイミング喪失',
-   reason:'ChatGPT・Claude等の一般普及でAI化が爆発的進行中。参入タイミングを逸した可能性が非常に高い。',
-   risk:'2026年内に浸透率80%超見込み。コピーAI・バナーAIが月額数千円で使えてしまう',
-   dominant:'電通AI / 博報堂DY / ADK（自社LLM開発済み） / Canva / Adobe Firefly',
-   entryBudget:'¥5,000万〜2億円（差別化機能の開発費）。汎用AIとの差別化が技術的に困難',
-   loseReason:'ChatGPT API直接利用で同等品が月額¥3,000で実現できる。価格下限が消滅し収益化不可能',
-   adjacent:'広告費をかけない中小ECの商品説明文・SNS自動投稿AI（LTV低いが薄利多売で安定）'},
-
-  {id:'avoid-mfg',
-   name:'E: 製造業（大手）', pen:58, growth:'+12%/年', forecast2028:'72〜76%',
-   reasonTag:'大手が数年前にAI投資完了・エンタープライズ競合が占有',
-   reason:'トヨタ・ソニー・パナソニック等が数年前からAI投資完了。エンタープライズ競合が市場を占有。',
-   risk:'製造ラインへの統合には安全認証・品質保証が必要。一度の不具合でリコール・訴訟リスク',
-   dominant:'Siemens（PLM AI） / SAP（製造ERP AI） / 日立製作所 / 富士通 / NEC',
-   entryBudget:'¥5〜30億円（製造ライン統合・安全認証・実績構築に最低3〜5年）',
-   loseReason:'トヨタ・ソニーは自社AI開発部門を設置済み。外部ベンダーは「実績ゼロ」では相手にされない',
-   adjacent:'従業員50〜300名の中小製造業（自動化AI・品質検査AI）。補助金活用で参入コスト最小化可能'},
-
-  {id:'avoid-call',
-   name:'S: サービス業（大手コールセンター）', pen:45, growth:'+25%/年 ⚠️急騰', forecast2028:'70〜75%',
-   reasonTag:'通信キャリアが自社インフラとセットで低価格提供',
-   reason:'ソフトバンク・KDDI・NTTが音声AIを全社導入中。2027年には市場の70%以上が置換え完了予定。',
-   risk:'通信キャリアが自社インフラとセットで低コスト提供。価格で対抗不可能',
-   dominant:'ソフトバンク（SB Intuitions） / KDDI（KDDI AI） / NTT（corevo） / Avaya / Genesys',
-   entryBudget:'¥1〜3億円。しかし通信キャリアの抱き合わせ販売に価格競合できない',
-   loseReason:'「電話回線 + 音声AI」のセット割引で月額数万円以下で提供される。独立サービスでは採算が取れない',
-   adjacent:'30席未満の専門領域コールセンター（医療・介護・税務の有資格者対応）—汎用AIが代替できない領域'},
-
-  {id:'avoid-ec',
-   name:'I: 卸売業、小売業（大手EC）', pen:52, growth:'+14%/年', forecast2028:'68〜72%',
-   reasonTag:'プラットフォーマーが無料でAI機能を提供済み',
-   reason:'Amazon・楽天・Yahoo!がAI推薦・需要予測を全面展開。中小ECも楽天AI・BASE AIで自動対応済み。',
-   risk:'独自AI参入コストがROIを大幅に超過する可能性が高い',
-   dominant:'Amazon（Personalize） / 楽天AI / Yahoo! AI推薦 / Shopify AI / BASE AI（中小向け自動提供）',
-   entryBudget:'¥2〜8億円。Amazonの推薦精度に対抗するには数千万SKU以上の学習データが必要',
-   loseReason:'プラットフォーマーが無料でAI機能を提供するため、独立サービスに¥0以上払う理由がない',
-   adjacent:'D2Cブランド・食品EC特化の需要予測・在庫最適化AI（プラットフォーム依存脱却ニーズあり）'},
-
-  {id:'avoid-hospital',
-   name:'P: 医療、福祉（大病院・医療機器）', pen:42, growth:'+20%/年', forecast2028:'58〜65%',
-   reasonTag:'薬機法認証3〜7年・承認なしでの販売は違法',
-   reason:'富士フイルム・キヤノンメディカル・シーメンスが画像診断AI市場を寡占。参入には医療機器認証が必要。',
-   risk:'薬機法・医療機器認証 → 承認取得に3〜7年+数十億円。1度の誤診AIで企業消滅レベルの訴訟',
-   dominant:'富士フイルム（SYNAPSE） / キヤノンメディカル / シーメンス・ヘルシニアーズ / GEヘルスケア / フィリップス',
-   entryBudget:'¥10〜50億円 + 薬機法承認（医療機器クラス2〜4：最低3〜7年の臨床試験）',
-   loseReason:'診断AIは医療機器として規制対象。認証なしでの販売は違法。承認後も大病院は実績ある大手を選ぶ',
-   adjacent:'診療所・クリニック（内科・皮膚科）の予約最適化・問診AI（薬機法対象外の業務効率化領域）'},
-];
-
-var TOP_PICKS = [
-  {rank:'🥇 第1推奨',cls:'gold',score:96,industry:'P: 医療、福祉',name:'地域中規模複合型介護事業者',roi:'¥2,400万/施設/年',tam:'¥336億/年（2,800法人全展開時）',payback:'8ヶ月',
-    whyIndustry:'AIエンジニアが120名/210万人従事者 = 業界最低密度。競合AIサービスがほぼ存在せず先行独占が可能',
-    whySize:'職員50〜200名規模は理事長が意思決定者で承認が速い。大手は自社開発中・小規模は費用対効果が低い',
-    whyNow:'介護DX補助金（最大500万円）が2026年度末で終了。今が最も低コストで参入できる最後のタイミング',
-    profile:{type:'デイサービス+訪問介護 複合型社会福祉法人',staff:'50〜200名（正規＋パート）',facility:'3〜15施設',location:'地方都市（人口10〜50万人圏）',mgmt:'社会福祉法人（理事長直決裁・月次理事会承認）',itStatus:'PC・スマホあり、専任IT担当なし、介護ソフト（ワムネット系）のみ'},
-    services:[{name:'音声介護記録AI',monthly:3,clientSave:85,margin:72,effect:'記録時間60%削減'},{name:'AIケアプラン自動生成',monthly:5,clientSave:120,margin:68,effect:'CM工数40%削減'},{name:'夜間見守りAIカメラ',monthly:2,clientSave:40,margin:60,effect:'夜間事故50%削減'},{name:'シフト最適化AI',monthly:2,clientSave:30,margin:65,effect:'残業20%削減'}],
-    roadmap:[{period:'Month 1〜2',action:'介護DX補助金の申請サポート（無償）→ 音声記録AIを1施設に無償設置',out:'0円で実績施設1件'},
-             {period:'Month 3〜4',action:'効果測定レポート（記録時間・残業削減データ）を理事長にプレゼン',out:'有償SaaS契約判断'},
-             {period:'Month 5〜6',action:'月12万円/施設でSaaS契約（4サービスパッケージ）→ 補助金で初期費用ゼロ化',out:'ARR ¥144万/年スタート'},
-             {period:'Month 7〜9',action:'成功事例で系列・近隣法人への紹介営業（口コミ展開）',out:'累積5施設 ARR ¥720万/年'},
-             {period:'Month10〜12',action:'地域介護DX勉強会を自社主催 → 参加法人にデモ実施',out:'累積15施設 ARR ¥2,160万/年'}],
-    revenue:[{year:'1年目末',facilities:15,annual:'¥2,160万',note:'地域1都市集中'},{year:'3年目末',facilities:80,annual:'¥1.15億',note:'3都市展開'},{year:'5年目末',facilities:250,annual:'¥3.6億',note:'全国10都市展開'}],
-    competition:{current:'ほぼなし（数社が実証実験中・商用未展開）',future:'SOMPOケア自社開発（2027年予定）・富士通Healthcare参入検討中',window:'先行参入できる期間は2027年末まで'},
-    ksf:['補助金活用でゼロコスト導入 → "試すハードル"を徹底的に下げる','現場スタッフがスマホ音声入力のみで完結するUX（PC不要）','理事長向けに毎月ROI数値レポートを自動送付し解約リスクを低減','地域DX勉強会を主催してコミュニティを形成・紹介経済圏を構築'],
-    avoid_risk:'大手介護事業者（ニチイ・SOMPOケア等）は自社開発が進んでいるため対象外'},
-  {rank:'🥈 第2推奨',cls:'silver',score:90,industry:'L: 学術研究、専門・技術サービス業',name:'地方中堅法律事務所（5〜30名規模）',roi:'¥3,600万/事務所/年',tam:'¥180億/年（9,000事務所全展開時）',payback:'6ヶ月',
-    whyIndustry:'1施設あたりROIが全業界最大（¥3,600万）。ChatGPT普及で弁護士の「AIへの抵抗感」が急低下中',
-    whySize:'5〜30名規模はパートナー数名で意思決定できる。大手渉外事務所は自社開発・1〜2名事務所は費用対効果低',
-    whyNow:'HarveyAI（米国シェアNo.1 法律AI）が2025年日本語対応開始。早期参入で「日本版Harvey」のポジションを取れる',
-    profile:{type:'企業法務・一般民事複合型 法律事務所',staff:'弁護士5〜30名＋パラリーガル・事務職',facility:'拠点1〜3箇所',location:'地方政令市・県庁所在地',mgmt:'パートナー弁護士合議（月次）',itStatus:'Microsoft 365使用、法律DB（Westlaw・LEX/DB）契約あり、AI未使用'},
-    services:[{name:'契約書レビューAI（RAG）',monthly:15,clientSave:300,margin:75,effect:'レビュー工数75%削減'},{name:'AI判例・法令検索',monthly:5,clientSave:80,margin:70,effect:'調査時間60%削減'},{name:'中小企業向けリーガルAI',monthly:8,clientSave:120,margin:72,effect:'新顧問収益源創出'}],
-    roadmap:[{period:'Month 1〜2',action:'契約書レビューAIの30日間無償デモ（実際の契約書で精度確認）',out:'「使える」と弁護士が認識'},
-             {period:'Month 3',action:'月額20万円でSaaS契約（3サービスパッケージ）→ IT補助金申請サポート',out:'ARR ¥240万スタート'},
-             {period:'Month 4〜6',action:'既存顧問企業へのリーガルAI提供プランを事務所が販売 → 事務所の新収益に',out:'口コミが発生する構造を作る'},
-             {period:'Month 7〜9',action:'弁護士会の研修・セミナーでスポンサー枠を取り一括デモ',out:'累積10事務所 ARR ¥2,400万'},
-             {period:'Month10〜12',action:'地方3都市の弁護士会に展開 → 30事務所目標',out:'ARR ¥7,200万/年'}],
-    revenue:[{year:'1年目末',facilities:30,annual:'¥7,200万',note:'1都市集中'},{year:'3年目末',facilities:150,annual:'¥3.6億',note:'全国主要10都市'},{year:'5年目末',facilities:400,annual:'¥9.6億',note:'全国展開'}],
-    competition:{current:'HarveyAI（英語中心）・弁護士ドットコムCLOUDSIGN（電子契約のみ）',future:'Microsoft Copilot for Legal（2026年参入予定）',window:'日本語特化の法律AIで2026年末まで独占可能'},
-    ksf:['日本の法律・判例データで特化ファインチューニングした精度で差別化','弁護士1人の承認フローを崩さないUX（AIが提案・弁護士が最終判断）','弁護士会公式認定を取得し「信頼の証」として活用','IT補助金申請代行とセットにして初期コスト障壁を除去'],
-    avoid_risk:'大手渉外事務所（TMI・森濱田松本等）は自社開発中のため対象外'},
-  {rank:'🥉 第3推奨',cls:'bronze',score:85,industry:'P: 医療、福祉（診療所）',name:'開業医・地域クリニック（院長1〜3名規模）',roi:'¥1,200万/クリニック/年',tam:'¥1,260億/年（10.5万診療所全展開時）',payback:'9ヶ月',
-    whyIndustry:'全国10万5千施設の巨大市場。医師の働き方改革（2024年）でAI導入インセンティブが強制的に発生',
-    whySize:'院長1〜3名規模は院長の鶴の一声で即導入決定。中規模病院は院内ITベンダーが絡んで複雑',
-    whyNow:'「医師の残業上限960時間」規制が2024年施行済み。違反すると行政処分 → AI導入が「義務」に近い状況',
-    profile:{type:'内科・整形外科・皮膚科等の単科クリニック',staff:'院長1〜3名＋看護師3〜8名＋受付2〜4名',facility:'1施設（開業医）',location:'住宅地・ロードサイド・商業施設内',mgmt:'院長が全権限（即日決裁可能）',itStatus:'電子カルテ使用（ORCA・MedicalStation等）・ネット予約未導入率60%'},
-    services:[{name:'診察音声AIカルテ',monthly:5,clientSave:80,margin:70,effect:'入力時間70%削減'},{name:'AI予約・リマインド',monthly:1.5,clientSave:25,margin:65,effect:'無断キャンセル50%削減'},{name:'レセプトAI自動チェック',monthly:3,clientSave:35,margin:68,effect:'エラー80%削減'}],
-    roadmap:[{period:'Month 1',action:'電子カルテ会社経由の紹介で院長にデモ（15分・院内スマホで完結）',out:'「簡単」と確認'},
-             {period:'Month 2〜3',action:'2ヶ月無償トライアル → 残業時間・カルテ入力時間を定量測定',out:'削減効果を数値化'},
-             {period:'Month 4',action:'月9.5万円でSaaS契約（3サービスパッケージ）→ 医療DX補助金申請',out:'ARR ¥114万スタート'},
-             {period:'Month 5〜8',action:'地域医師会での口コミ + 電子カルテベンダーとのAPI連携強化',out:'累積50施設 ARR ¥5,700万'},
-             {period:'Month 9〜12',action:'製薬会社MRの訪問ルートと提携し一括提案',out:'累積120施設 ARR ¥1.37億'}],
-    revenue:[{year:'1年目末',facilities:120,annual:'¥1.37億',note:'電カルベンダー連携'},{year:'3年目末',facilities:800,annual:'¥9.1億',note:'全国5地域展開'},{year:'5年目末',facilities:2500,annual:'¥28.5億',note:'全国展開・医師会公認'}],
-    competition:{current:'Ubie（問診AI・先行）・SOKEN ASSIST（音声カルテ・先行）',future:'富士フイルム・キヤノンMedical が音声AI参入検討',window:'Ubieと音声カルテで差別化し2026年末までに1,000施設を確保'},
-    ksf:['電子カルテベンダー（ORCA・Medicomの70%シェア）との公式API連携が最大の参入障壁','15分デモで「今日から使える」体験を提供（導入判断をその場で取る）','医師会への公式採用・研修プログラム組み込みで信頼性確立','レセプト返戻削減を「保証」として提示（成果報酬オプション）'],
-    avoid_risk:'200床以上の中規模病院は病院システムベンダー（富士通・日立）との契約が障壁になるため対象外'},
-];
-
-var ROI_TABLE = [
-  {svc:'音声介護記録AI', ind:'介護・福祉', type:'エージェント', init:'30万', monthly:'3万', save:'85万/月', net:'984万/年', payback:'5ヶ月'},
-  {svc:'AIケアプラン自動生成', ind:'介護・福祉', type:'エージェント', init:'50万', monthly:'5万', save:'120万/月', net:'1,380万/年', payback:'5ヶ月'},
-  {svc:'転倒検知AIカメラ', ind:'介護・福祉', type:'ループAI', init:'80万', monthly:'2万', save:'40万/月', net:'376万/年', payback:'22ヶ月'},
-  {svc:'契約書レビューAI', ind:'法律・法務', type:'エージェント', init:'100万', monthly:'15万', save:'300万/月', net:'3,480万/年', payback:'4ヶ月'},
-  {svc:'診察音声AIカルテ', ind:'クリニック', type:'エージェント', init:'30万', monthly:'5万', save:'80万/月', net:'900万/年', payback:'5ヶ月'},
-  {svc:'レセプトAI自動チェック', ind:'クリニック', type:'エージェント', init:'20万', monthly:'3万', save:'35万/月', net:'384万/年', payback:'7ヶ月'},
-  {svc:'施工管理AIエージェント', ind:'建設業（中小）', type:'エージェント', init:'150万', monthly:'12万', save:'160万/月', net:'1,656万/年', payback:'12ヶ月'},
-  {svc:'AI図面解析・積算', ind:'建設業（中小）', type:'エージェント', init:'100万', monthly:'9万', save:'180万/月', net:'2,052万/年', payback:'7ヶ月'},
-  {svc:'住民対応AIチャットボット', ind:'行政・自治体', type:'エージェント', init:'300万', monthly:'30万', save:'200万/月', net:'2,040万/年', payback:'19ヶ月'},
-  {svc:'バックオフィスAIエージェント', ind:'中小サービス業', type:'エージェント', init:'10万', monthly:'1.5万', save:'30万/月', net:'342万/年', payback:'4ヶ月'},
-];
-
-var FORECAST_TABLE = [
-  {ind:'介護・福祉', pen:8, accel:'介護DX補助金・働き方改革・人手不足深刻化', block:'現場ITリテラシー低・初期費用', f2028:18, f2032:38, deadline:'2027年末', urgent:true},
-  {ind:'法律・法務', pen:10, accel:'ChatGPT普及・HarveyAI上陸・業務効率化需要', block:'守秘義務・日弁連保守的対応', f2028:23, f2032:43, deadline:'2027年末', urgent:true},
-  {ind:'クリニック・診療所', pen:14, accel:'医師の働き方改革・音声AI精度向上', block:'患者データ規制・高齢患者', f2028:28, f2032:45, deadline:'2027年末', urgent:true},
-  {ind:'建設業（中小）', pen:12, accel:'2024年問題・建設DX補助金', block:'現場スマホ操作困難・元請指定', f2028:24, f2032:44, deadline:'2028年末', urgent:false},
-  {ind:'行政・自治体', pen:18, accel:'デジタル庁主導・交付金・2040年職員不足', block:'セキュリティ規制・調達期間長', f2028:31, f2032:46, deadline:'2028年末', urgent:false},
-  {ind:'農業（中小）', pen:15, accel:'スマート農業補助金・食料安保', block:'高齢農家リテラシー', f2028:27, f2032:42, deadline:'2028年末', urgent:false},
-  {ind:'水産業', pen:8, accel:'水産DX補助金・漁獲量危機', block:'海上ネット接続困難', f2028:18, f2032:33, deadline:'2029年末', urgent:false},
-  {ind:'中小サービス業', pen:9, accel:'IT補助金・会計AI標準化', block:'費用対効果の見えにくさ', f2028:21, f2032:39, deadline:'2028年末', urgent:false},
-  {ind:'林業', pen:5, accel:'林業DX補助金・ドローン規制緩和', block:'山間部接続問題', f2028:13, f2032:25, deadline:'2030年末', urgent:false},
-  {ind:'宗教・葬儀', pen:3, accel:'後継者問題危機感・葬儀SaaS普及', block:'保守的価値観', f2028:9, f2032:20, deadline:'2030年末', urgent:false},
-];
+// 既存の render*() が参照するグローバル変数（fetch後に代入）
+var INDUSTRIES = [];
+var AVOID_MARKETS = [];
+var TOP_PICKS = [];
+var ROI_TABLE = [];
+var FORECAST_TABLE = [];
 
 /* ====================================================
    HELPERS
@@ -2112,15 +1561,20 @@ function initCharts(){
   });
 }
 
-function scrollTo(id){
-  var el = document.getElementById(id);
-  if(el) el.scrollIntoView({behavior:'smooth'});
+function scrollToSection(id, el){
+  var target = document.getElementById(id);
+  if(target) target.scrollIntoView({behavior:'smooth'});
+  // トップバータブのアクティブ表示を更新（filterCards と同じ .on パターン）
+  if(el){
+    document.querySelectorAll('.topbar-tabs .topbar-tab').forEach(function(t){ t.classList.remove('on'); });
+    el.classList.add('on');
+  }
 }
 
 /* ====================================================
    INIT
    ==================================================== */
-document.addEventListener('DOMContentLoaded', function(){
+function renderAll(){
   renderTop5Ranking();
   renderIndustryCards();
   renderSummaryTable();
@@ -2129,6 +1583,27 @@ document.addEventListener('DOMContentLoaded', function(){
   renderROITable();
   renderAvoid();
   setTimeout(initCharts, 150);
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  fetch('data/markets.json')
+    .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+    .then(function(d){
+      INDUSTRIES      = d.industries    || [];
+      AVOID_MARKETS   = d.avoidMarkets  || [];
+      TOP_PICKS       = d.topPicks      || [];
+      ROI_TABLE       = d.roiTable      || [];
+      FORECAST_TABLE  = d.forecastTable || [];
+      renderAll();
+    })
+    .catch(function(e){
+      console.error('データ読み込み失敗:', e);
+      var m = document.querySelector('.main') || document.body;
+      var box = document.createElement('div');
+      box.style.cssText = 'margin:24px;padding:16px;border:1px solid var(--red-br,#FECACA);background:var(--red-lt,#FEF2F2);color:var(--red,#DC2626);border-radius:8px;font-weight:600;';
+      box.textContent = 'データの読み込みに失敗しました（data/markets.json）。ローカルで開く場合は file:// ではなくローカルサーバ経由で開いてください。';
+      m.prepend(box);
+    });
 });
 </script>
 </body>
