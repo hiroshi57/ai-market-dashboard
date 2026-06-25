@@ -1751,7 +1751,18 @@ function handleSignup(){
   if(!sb){ showAuthMessage('Supabase が未設定です（SUPABASE_URL を確認してください）','error'); btn.disabled=false; btn.textContent='無料登録する'; return; }
   sb.auth.signUp({email:email, password:password}).then(function(res){
     btn.disabled=false; btn.textContent='無料登録する';
-    if(res.error){ showAuthMessage(res.error.message,'error'); return; }
+    if(res.error){
+      var msg = res.error.message || '';
+      if(msg.toLowerCase().indexOf('email signups are disabled') !== -1){
+        showAuthMessage('現在メール登録が無効になっています。管理者にお問い合わせいただくか、しばらく経ってから再度お試しください。','error');
+      } else if(msg.toLowerCase().indexOf('already registered') !== -1 || msg.toLowerCase().indexOf('user already exists') !== -1){
+        showAuthMessage('このメールアドレスはすでに登録されています。「ログイン」からサインインしてください。','error');
+        setTimeout(function(){ switchAuthTab('login'); }, 1800);
+      } else {
+        showAuthMessage('登録に失敗しました: ' + msg, 'error');
+      }
+      return;
+    }
     if(res.data.user && !res.data.session){
       showAuthMessage('確認メールを送信しました。メール内のリンクをクリックして登録を完了してください。','success');
     } else {
