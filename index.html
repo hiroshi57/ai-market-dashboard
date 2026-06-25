@@ -250,6 +250,8 @@ tr:hover td{background:var(--surface2)}
 
 /* ── TOP PICK cards ── */
 .top-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+@media(max-width:960px){.top-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:580px){.top-grid{grid-template-columns:1fr}}
 .top-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;box-shadow:var(--shadow);position:relative;overflow:hidden}
 .top-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px}
 .top-card.gold::before{background:linear-gradient(90deg,#F59E0B,#D97706)}
@@ -397,14 +399,19 @@ tr:hover td{background:var(--surface2)}
 @media(max-width:700px){.hero-title{font-size:20px}.rank-num{font-size:18px;min-width:24px}}
 
 /* ── Hero Block ── */
-.hero-block{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--green);border-radius:0 12px 12px 0;padding:22px 24px;margin-bottom:0;box-shadow:var(--shadow)}
-.hero-eyebrow{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px}
-.hero-title{font-size:26px;font-weight:800;color:var(--text);font-family:var(--f-head);line-height:1.2;margin-bottom:6px}
+.hero-block{background:linear-gradient(135deg,#fff 60%,#EFF6FF 100%);border:1px solid var(--border);border-left:4px solid var(--green);border-radius:0 12px 12px 0;padding:24px 28px;margin-bottom:0;box-shadow:var(--shadow)}
+.hero-eyebrow{font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.12em;margin-bottom:8px;display:flex;align-items:center;gap:5px}
+.hero-title{font-size:26px;font-weight:800;color:var(--text);font-family:var(--f-head);line-height:1.2;margin-bottom:8px}
 .hero-title em{font-style:normal;color:var(--green)}
-.hero-kpi{font-size:13px;color:var(--text2);margin-bottom:18px}
+.hero-kpi{font-size:13px;color:var(--text2);margin-bottom:16px}
 .hero-kpi strong{color:var(--green);font-size:20px;font-family:var(--f-head)}
-.hero-reasons{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
-.reason-card{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px 14px;text-align:center;transition:.2s}
+.hero-reasons{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.reason-card{background:#fff;border:1px solid var(--border);border-radius:8px;padding:12px 14px;text-align:center;transition:.2s;box-shadow:var(--shadow-sm)}
+.hero-cta{display:flex;gap:10px;margin-top:16px;padding-top:14px;border-top:1px solid var(--border);flex-wrap:wrap}
+.btn-cta-primary{padding:9px 20px;border-radius:8px;font-size:13px;font-weight:700;color:#fff;background:var(--green);border:none;cursor:pointer;transition:.15s;font-family:inherit}
+.btn-cta-primary:hover{background:#047857;transform:translateY(-1px);box-shadow:0 4px 12px rgba(5,150,105,.25)}
+.btn-cta-secondary{padding:9px 20px;border-radius:8px;font-size:13px;font-weight:600;color:var(--primary);background:transparent;border:1.5px solid var(--primary);cursor:pointer;transition:.15s;font-family:inherit}
+.btn-cta-secondary:hover{background:var(--primary-lt)}
 .reason-card:hover{border-color:var(--green);box-shadow:var(--shadow-sm)}
 .reason-num{font-size:9px;font-weight:800;color:var(--text3);letter-spacing:.12em;margin-bottom:4px}
 .reason-val{font-size:15px;font-weight:800;color:var(--text);font-family:var(--f-head);margin-bottom:2px;line-height:1.2}
@@ -466,6 +473,20 @@ tr:hover td{background:var(--surface2)}
 .type-agent{background:#EFF6FF;color:#1D4ED8;border-color:#BFDBFE}
 .type-loop{background:#F5F3FF;color:#6D28D9;border-color:#DDD6FE}
 .type-施策{background:var(--green-lt);color:#065F46;border-color:var(--green-br)}
+
+/* ── Page Header ── */
+.page-header{margin-bottom:20px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.page-header-left{flex:1;min-width:0}
+.page-subtitle-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.page-src-tag{display:inline-flex;align-items:center;padding:2px 8px;background:var(--surface2);border:1px solid var(--border);border-radius:99px;font-size:10px;color:var(--text3);font-weight:600}
+
+/* ── Footer ── */
+.site-footer{background:var(--surface);border-top:1px solid var(--border);padding:16px 24px;margin-top:32px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.footer-copy{font-size:11px;color:var(--text3)}
+.footer-links{display:flex;gap:16px;flex-wrap:wrap}
+.footer-link{font-size:11px;color:var(--text3);text-decoration:none;cursor:pointer}
+.footer-link:hover{color:var(--primary)}
+.footer-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;background:var(--primary-lt);color:var(--primary);border-radius:99px;font-size:10px;font-weight:700}
 
 /* ══ UI Improvements ════════════════════════════════ */
 
@@ -703,11 +724,18 @@ tr:hover td{background:var(--surface2)}
 
 <!-- PAGE HEADER -->
 <div class="page-header fade-in">
-  <div class="page-title">
-    🔍 AI未浸透市場 インテリジェンスマップ
-    <span class="page-badge"><span class="live-dot" style="width:5px;height:5px"></span>日本市場 2026</span>
+  <div class="page-header-left">
+    <div class="page-title">
+      🔍 AI未浸透市場 インテリジェンスマップ
+      <span class="page-badge"><span class="live-dot" style="width:5px;height:5px"></span>日本市場 2026</span>
+    </div>
+    <div class="page-subtitle-tags">
+      <span class="page-src-tag">📊 経産省DX調査</span>
+      <span class="page-src-tag">📋 総務省情報通信白書2025</span>
+      <span class="page-src-tag">🌐 McKinsey AI Survey 2025</span>
+      <span class="page-src-tag">🗂 e-Stat 標準産業分類</span>
+    </div>
   </div>
-  <div class="page-subtitle">一次情報（経産省DX調査・総務省情報通信白書2025）＋ 海外比較（McKinsey AI Survey 2025）＋ 矢野経済研究所 ｜ 産業分類: 日本標準産業分類 第四版（e-Stat）</div>
 </div>
 
 <!-- HERO BLOCK: 結論ファースト -->
@@ -740,8 +768,10 @@ tr:hover td{background:var(--surface2)}
     <span>参入回避: <b style="color:var(--red)">7業界</b></span>
     <span class="hs-div">|</span>
     <span>⚡ 緊急（2027年末まで）: <b style="color:var(--red)">3業界</b></span>
-    <span class="hs-div">|</span>
-    <span style="color:var(--text2)">出典: 経産省DX調査・総務省情報通信白書2025・McKinsey AI Survey 2025</span>
+  </div>
+  <div class="hero-cta">
+    <button class="btn-cta-primary" onclick="scrollToSection('sec-industries',null)">▶ 無料で市場を見る</button>
+    <button class="btn-cta-secondary" onclick="openAuthModal('signup')">🔓 全データを見る（無料登録）</button>
   </div>
 </div>
 
@@ -945,20 +975,6 @@ tr:hover td{background:var(--surface2)}
   <div class="bridge-line"></div>
 </div>
 
-<!-- BRIDGE 3 -->
-<div class="section-bridge fade-in">
-  <div class="bridge-line"></div>
-  <span>逆に、手を出してはいけない市場は？ ↓</span>
-  <div class="bridge-line"></div>
-</div>
-
-<!-- BRIDGE 3 -->
-<div class="section-bridge fade-in">
-  <div class="bridge-line"></div>
-  <span>逆に、手を出してはいけない市場は？ ↓</span>
-  <div class="bridge-line"></div>
-</div>
-
 <!-- AVOID SECTION -->
 <div class="sec fade-in" id="sec-avoid">
   <div class="sec-hdr">
@@ -1001,6 +1017,17 @@ tr:hover td{background:var(--surface2)}
   予測: Google TimesFM（github.com/google-research/timesfm）参考実装 ｜ 本情報は意思決定の参考資料です
 </div>
 
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-copy">© 2026 AI未浸透市場ダッシュボード｜データ: e-Stat・経産省・総務省・McKinsey</div>
+  <div class="footer-links">
+    <span class="footer-link" onclick="openAuthModal('signup')">無料登録</span>
+    <span class="footer-link" onclick="openAuthModal('login')">ログイン</span>
+    <span class="footer-link">利用規約</span>
+    <span class="footer-link">プライバシーポリシー</span>
+  </div>
+  <div class="footer-badge">🤖 TimesFM 予測搭載</div>
+</footer>
 </main><!-- /main -->
 </div><!-- /body -->
 </div><!-- /shell -->
