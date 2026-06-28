@@ -1089,6 +1089,14 @@ function filterCards(priority, el){
 }
 
 function jumpToIndustry(id){
+  // 課金ゲート: 無料分(3回)を超えたらペイウォール
+  if (typeof gate !== 'undefined') {
+    if (!gate.canUse()) {
+      gate.showPaywall({ proPrice: '¥980', proFeatures: ['全業界の詳細データ', 'レポートDL', '予測グラフ'] });
+      return;
+    }
+    gate.recordUse();
+  }
   // まず全業界表示
   filterCards('all', document.querySelector('[data-filter="all"]'));
   setTimeout(function(){
@@ -1605,6 +1613,17 @@ document.addEventListener('DOMContentLoaded', function(){
       m.prepend(box);
     });
 });
+</script>
+<script src="zen-paywall.js"></script>
+<script>
+  var gate = new ZenPaywall({
+    slug: 'marketzen',
+    freeLimit: 3,
+    appTitle: 'MarketZen',
+    price: '¥980',
+    paymentLink: 'https://buy.stripe.com/4gMaEY7YibnfaWL5ZO2ZO0a',
+    proFeatures: ['全業界の詳細データ', 'レポートDL', '予測グラフ']
+  });
 </script>
 </body>
 </html>
