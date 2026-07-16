@@ -241,6 +241,12 @@ tr:hover td{background:var(--surface2)}
 /* ── TimesFM Badge ── */
 .tfm-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;background:var(--purple-lt);border:1px solid #DDD6FE;border-radius:6px;font-size:11px;color:var(--purple);font-weight:600;margin-bottom:12px}
 
+/* ── TabFM Badge ── */
+.tabfm-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;background:var(--green-lt);border:1px solid var(--green-br);border-radius:6px;font-size:11px;color:var(--green);font-weight:600;margin-bottom:12px}
+.tabfm-diff{font-weight:700}
+.tabfm-diff.pos{color:var(--green)}
+.tabfm-diff.neg{color:var(--red)}
+
 /* ── Avoid cards ── */
 .avoid-card{display:flex;align-items:flex-start;gap:12px;background:var(--red-lt);border:1px solid var(--red-br);border-left:3px solid var(--red);border-radius:0 8px 8px 0;padding:12px 16px;margin-bottom:8px;box-shadow:var(--shadow-sm)}
 .avoid-name{font-size:13px;font-weight:800;color:var(--red);margin-bottom:3px;font-family:var(--f-head)}
@@ -632,7 +638,7 @@ tr:hover td{background:var(--surface2)}
   <div class="topbar-tabs">
     <button class="topbar-tab on" onclick="scrollToSection('sec-overview',this)">概要</button>
     <button class="topbar-tab" onclick="scrollToSection('sec-industries',this)">業界詳細</button>
-    <button class="topbar-tab" onclick="scrollToSection('sec-timefm',this)">TimesFM予測</button>
+    <button class="topbar-tab" onclick="scrollToSection('sec-timefm',this)">TimesFM/TabFM予測</button>
     <button class="topbar-tab" onclick="scrollToSection('sec-recommend',this)">推奨ターゲット</button>
     <button class="topbar-tab" onclick="scrollToSection('sec-avoid',this)">回避市場</button>
   </div>
@@ -688,7 +694,7 @@ tr:hover td{background:var(--surface2)}
     <span class="s-label">分析ツール</span>
     <a class="s-link" href="#sec-charts">📊 浸透率チャート</a>
     <a class="s-link" href="#sec-matrix">🎯 機会マトリクス</a>
-    <a class="s-link" href="#sec-timefm">📈 TimesFM予測</a>
+    <a class="s-link" href="#sec-timefm">📈 TimesFM/TabFM予測</a>
     <a class="s-link" href="#sec-roi">💴 ROI試算</a>
   </div>
   <div class="s-divider"></div>
@@ -901,7 +907,7 @@ tr:hover td{background:var(--surface2)}
     <div class="lock-overlay-box">
       <div class="lock-icon">🔒</div>
       <div class="lock-label">無料登録でアクセス</div>
-      <div class="lock-desc">TimesFM 時系列予測の具体数値・参入デッドライン一覧をご覧いただけます。<br>登録は無料・メールアドレスのみ。</div>
+      <div class="lock-desc">TimesFM 時系列予測・TabFM ゼロショットスコア検証の具体数値、参入デッドライン一覧をご覧いただけます。<br>登録は無料・メールアドレスのみ。</div>
       <button class="btn-unlock" onclick="openAuthModal('signup')">▶ 無料登録して確認する</button>
       <p class="lock-login-link">すでにアカウントをお持ちの方は <a href="#" onclick="openAuthModal('login');return false">ログイン</a></p>
     </div>
@@ -942,6 +948,46 @@ tr:hover td{background:var(--surface2)}
         <tr><th>業界</th><th>現在</th><th>米国</th><th>加速要因（外部変数）</th><th>阻害要因</th><th>2028予測（基準/楽観）</th><th>2032予測（基準/楽観）</th><th>参入デッドライン</th><th>収益モデル</th><th>最短収益化</th></tr>
       </thead>
       <tbody id="forecast-table"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- TabFM SECTION -->
+<div class="sec fade-in">
+  <div class="sec-hdr">
+    <div class="sec-title">🧮 TabFM 参入優先度スコア検証（表形式ゼロショット予測）</div>
+    <a href="https://github.com/google-research/tabfm" target="_blank" style="font-size:11px;color:var(--primary)">GitHub: google-research/tabfm ↗</a>
+  </div>
+  <div class="tabfm-badge">🧮 TabFM v1.0 — Tabular Foundation Model（in-context learning）｜ Leave-One-Out ゼロショット回帰 ｜ 15業界横断</div>
+  <div class="alert-banner type-blue" style="margin-bottom:14px">
+    <div class="alert-icon">ℹ️</div>
+    <div class="alert-body">
+      <div class="alert-title">TabFM 予測アルゴリズムについて</div>
+      <div class="alert-text">Google TabFM（Tabular Foundation Model）は、時系列ではなく表形式データ（浸透率・市場規模・AI人材密度など複数列の特徴量）を対象に、パラメータ再学習なしで分類・回帰を行うin-context学習モデル。各業界を1つずつ除外し、残り14業界の特徴量パターンのみから参入優先度スコアをゼロショット予測（Leave-One-Out検証）。人間が付けたスコアとの乖離が大きい業界ほど「AIの目にも他とは違うパターンで映る」＝定量分析だけでは見えにくい特異ポイントである可能性を示す。</div>
+    </div>
+  </div>
+  <div class="g2" style="margin-bottom:16px">
+    <div class="card">
+      <div class="card-body">
+        <div class="card-title">実際スコア vs TabFM予測スコア</div>
+        <div class="card-desc">棒: 人間評価スコア（濃）／TabFM予測スコア（薄）｜ 乖離が大きいほど「AIから見た意外性」が高い</div>
+        <canvas id="chartTabFM" height="280"></canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <div class="card-title">予測乖離ランキング（|actual − predicted|）</div>
+        <div class="card-desc">乖離が大きい業界ほど、他業界のパターンだけでは説明できない特異な参入機会</div>
+        <canvas id="chartTabFMDiff" height="280"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr><th>業界</th><th>実際スコア</th><th>TabFM予測</th><th>乖離</th><th>解釈</th></tr>
+      </thead>
+      <tbody id="tabfm-table"></tbody>
     </table>
   </div>
 </div>
@@ -1029,7 +1075,7 @@ tr:hover td{background:var(--surface2)}
     <span class="footer-link">利用規約</span>
     <span class="footer-link">プライバシーポリシー</span>
   </div>
-  <div class="footer-badge">🤖 TimesFM 予測搭載</div>
+  <div class="footer-badge">🤖 TimesFM・TabFM 予測搭載</div>
 </footer>
 </main><!-- /main -->
 </div><!-- /body -->
@@ -1391,6 +1437,32 @@ function renderForecastTable(){
   }).join('');
 }
 
+function renderTabFMTable(){
+  var tbody = document.getElementById('tabfm-table');
+  if(!tbody) return;
+  var sorted = INDUSTRIES.filter(function(i){return i.tabfm}).slice().sort(function(a,b){
+    return Math.abs(b.tabfm.diff) - Math.abs(a.tabfm.diff);
+  });
+  tbody.innerHTML = sorted.map(function(ind){
+    var t = ind.tabfm;
+    var diffAbs = Math.abs(t.diff);
+    var diffCls = t.diff < 0 ? 'neg' : 'pos';
+    var diffSign = t.diff >= 0 ? '+' : '';
+    var interp = diffAbs >= 15
+      ? '🔍 他業界パターンから外れた特異点 — 定量分析の死角の可能性'
+      : diffAbs >= 7
+      ? '△ ある程度の乖離 — 独自要因が寄与'
+      : '✓ 他業界パターンと整合的';
+    return '<tr>'+
+      '<td style="font-weight:700;color:var(--text)">'+ind.name+'</td>'+
+      '<td style="font-weight:800;color:var(--primary)">'+t.actualScore+'</td>'+
+      '<td style="font-weight:700;color:var(--green)">'+t.predScore+'</td>'+
+      '<td class="tabfm-diff '+diffCls+'">'+diffSign+t.diff+'</td>'+
+      '<td style="font-size:10px;color:var(--text2)">'+interp+'</td>'+
+    '</tr>';
+  }).join('');
+}
+
 function riskDots(score){
   var html='<div class="risk-dots">';
   for(var i=1;i<=3;i++){
@@ -1730,6 +1802,64 @@ function initCharts(){
     }
   });
 
+  // 5b. TabFM
+  var tabfmData = INDUSTRIES.filter(function(i){return i.tabfm});
+  new Chart(document.getElementById('chartTabFM'),{
+    type:'bar',
+    data:{
+      labels: tabfmData.map(function(i){return i.name.length>8?i.name.substring(0,8)+'…':i.name}),
+      datasets:[
+        {
+          label:'実際スコア',
+          data: tabfmData.map(function(i){return i.tabfm.actualScore}),
+          backgroundColor:'rgba(37,99,235,.75)',
+          borderColor:'#2563EB', borderWidth:1, borderRadius:3,
+        },
+        {
+          label:'TabFM予測',
+          data: tabfmData.map(function(i){return i.tabfm.predScore}),
+          backgroundColor:'rgba(5,150,105,.35)',
+          borderColor:'#059669', borderWidth:1, borderRadius:3,
+        },
+      ]
+    },
+    options:{
+      responsive:true,
+      plugins:{
+        legend:{display:true,position:'bottom',labels:{font:{size:9},boxWidth:16,color:'#94A3B8'}},
+        tooltip:{mode:'index',intersect:false}
+      },
+      scales:{
+        x:{grid:{display:false},ticks:{color:'#94A3B8',font:{size:9}}},
+        y:{title:{display:true,text:'スコア',color:'#94A3B8',font:{size:10}},grid:{color:'rgba(15,23,42,.06)'},ticks:{color:'#94A3B8',font:{size:10}}}
+      }
+    }
+  });
+
+  var tabfmDiffSorted = tabfmData.slice().sort(function(a,b){return Math.abs(b.tabfm.diff)-Math.abs(a.tabfm.diff)});
+  new Chart(document.getElementById('chartTabFMDiff'),{
+    type:'bar',
+    data:{
+      labels: tabfmDiffSorted.map(function(i){return i.name.length>8?i.name.substring(0,8)+'…':i.name}),
+      datasets:[{
+        label:'|乖離|',
+        data: tabfmDiffSorted.map(function(i){return Math.abs(i.tabfm.diff)}),
+        backgroundColor: tabfmDiffSorted.map(function(i){return Math.abs(i.tabfm.diff)>=15?'rgba(220,38,38,.6)':Math.abs(i.tabfm.diff)>=7?'rgba(217,119,6,.5)':'rgba(148,163,184,.4)'}),
+        borderColor: tabfmDiffSorted.map(function(i){return Math.abs(i.tabfm.diff)>=15?'#DC2626':Math.abs(i.tabfm.diff)>=7?'#D97706':'#94A3B8'}),
+        borderWidth:1, borderRadius:3,
+      }]
+    },
+    options:{
+      indexAxis:'y',
+      responsive:true,
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{title:{display:true,text:'|実際 − TabFM予測|',color:'#94A3B8',font:{size:10}},grid:{color:'rgba(15,23,42,.06)'},ticks:{color:'#94A3B8',font:{size:10}}},
+        y:{grid:{display:false},ticks:{color:'#475569',font:{size:9}}}
+      }
+    }
+  });
+
   // 6. Avoid scatter
   var avoidData = [
     {name:'IT・テック',pen:78,growth:18},{name:'広告・マーケ',pen:65,growth:38},
@@ -1783,6 +1913,7 @@ function renderAll(){
   renderIndustryCards();
   renderSummaryTable();
   renderForecastTable();
+  renderTabFMTable();
   renderTopCards();
   renderROITable();
   renderAvoid();
@@ -2048,7 +2179,7 @@ function initScrollSpy(){
     <div class="auth-modal-title">AI未浸透市場ダッシュボード</div>
     <div class="auth-modal-subtitle">無料登録で全データにアクセス</div>
     <div class="auth-modal-perks">
-      <div class="auth-modal-perk">TimesFM予測・参入デッドライン一覧</div>
+      <div class="auth-modal-perk">TimesFM/TabFM予測・参入デッドライン一覧</div>
       <div class="auth-modal-perk">TOP推奨ターゲット・12ヶ月ロードマップ</div>
       <div class="auth-modal-perk">詳細ROI試算テーブル（業界別）</div>
     </div>

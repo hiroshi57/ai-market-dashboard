@@ -130,6 +130,21 @@
           21,
           26
         ]
+      },
+      "tabfm": {
+        "predScore": 69.4,
+        "actualScore": 96,
+        "diff": -26.6,
+        "method": "leave-one-out kernel-weighted in-context regression (TabFM approach)",
+        "features": [
+          "pen",
+          "market",
+          "workers",
+          "aiEng",
+          "aiEngDensity",
+          "usaPen",
+          "globalPen"
+        ]
       }
     },
     {
@@ -253,6 +268,21 @@
           22,
           27,
           32
+        ]
+      },
+      "tabfm": {
+        "predScore": 80.2,
+        "actualScore": 90,
+        "diff": -9.8,
+        "method": "leave-one-out kernel-weighted in-context regression (TabFM approach)",
+        "features": [
+          "pen",
+          "market",
+          "workers",
+          "aiEng",
+          "aiEngDensity",
+          "usaPen",
+          "globalPen"
         ]
       }
     },
@@ -386,6 +416,21 @@
           29,
           34
         ]
+      },
+      "tabfm": {
+        "predScore": 78.8,
+        "actualScore": 85,
+        "diff": -6.2,
+        "method": "leave-one-out kernel-weighted in-context regression (TabFM approach)",
+        "features": [
+          "pen",
+          "market",
+          "workers",
+          "aiEng",
+          "aiEngDensity",
+          "usaPen",
+          "globalPen"
+        ]
       }
     },
     {
@@ -516,6 +561,21 @@
           22,
           27,
           32
+        ]
+      },
+      "tabfm": {
+        "predScore": 78.5,
+        "actualScore": 88,
+        "diff": -9.5,
+        "method": "leave-one-out kernel-weighted in-context regression (TabFM approach)",
+        "features": [
+          "pen",
+          "market",
+          "workers",
+          "aiEng",
+          "aiEngDensity",
+          "usaPen",
+          "globalPen"
         ]
       }
     },
@@ -649,6 +709,21 @@
           31,
           36
         ]
+      },
+      "tabfm": {
+        "predScore": 83,
+        "actualScore": 78,
+        "diff": 5,
+        "method": "leave-one-out kernel-weighted in-context regression (TabFM approach)",
+        "features": [
+          "pen",
+          "market",
+          "workers",
+          "aiEng",
+          "aiEngDensity",
+          "usaPen",
+          "globalPen"
+        ]
       }
     },
     {
@@ -775,6 +850,21 @@
           28,
           33
         ]
+      },
+      "tabfm": {
+        "predScore": 82.5,
+        "actualScore": 74,
+        "diff": 8.5,
+        "method": "leave-one-out kernel-weighted in-context regression (TabFM approach)",
+        "features": [
+          "pen",
+          "market",
+          "workers",
+          "aiEng",
+          "aiEngDensity",
+          "usaPen",
+          "globalPen"
+        ]
       }
     },
     {
@@ -899,6 +989,21 @@
           16,
           20,
           24
+        ]
+      },
+      "tabfm": {
+        "predScore": 72,
+        "actualScore": 70,
+        "diff": 2,
+        "method": "leave-one-out kernel-weighted in-context regression (TabFM approach)",
+        "features": [
+          "pen",
+          "market",
+          "workers",
+          "aiEng",
+          "aiEngDensity",
+          "usaPen",
+          "globalPen"
         ]
       }
     },
@@ -1032,6 +1137,21 @@
           22,
           27
         ]
+      },
+      "tabfm": {
+        "predScore": 83.8,
+        "actualScore": 80,
+        "diff": 3.8,
+        "method": "leave-one-out kernel-weighted in-context regression (TabFM approach)",
+        "features": [
+          "pen",
+          "market",
+          "workers",
+          "aiEng",
+          "aiEngDensity",
+          "usaPen",
+          "globalPen"
+        ]
       }
     },
     {
@@ -1157,6 +1277,21 @@
           15,
           18
         ]
+      },
+      "tabfm": {
+        "predScore": 67.9,
+        "actualScore": 65,
+        "diff": 2.9,
+        "method": "leave-one-out kernel-weighted in-context regression (TabFM approach)",
+        "features": [
+          "pen",
+          "market",
+          "workers",
+          "aiEng",
+          "aiEngDensity",
+          "usaPen",
+          "globalPen"
+        ]
       }
     },
     {
@@ -1281,6 +1416,21 @@
           8,
           10,
           13
+        ]
+      },
+      "tabfm": {
+        "predScore": 61.1,
+        "actualScore": 60,
+        "diff": 1.1,
+        "method": "leave-one-out kernel-weighted in-context regression (TabFM approach)",
+        "features": [
+          "pen",
+          "market",
+          "workers",
+          "aiEng",
+          "aiEngDensity",
+          "usaPen",
+          "globalPen"
         ]
       }
     },
@@ -1413,6 +1563,21 @@
           9,
           12
         ]
+      },
+      "tabfm": {
+        "predScore": 63,
+        "actualScore": 55,
+        "diff": 8,
+        "method": "leave-one-out kernel-weighted in-context regression (TabFM approach)",
+        "features": [
+          "pen",
+          "market",
+          "workers",
+          "aiEng",
+          "aiEngDensity",
+          "usaPen",
+          "globalPen"
+        ]
       }
     },
     {
@@ -1544,6 +1709,21 @@
           14,
           17,
           21
+        ]
+      },
+      "tabfm": {
+        "predScore": 67.8,
+        "actualScore": 62,
+        "diff": 5.8,
+        "method": "leave-one-out kernel-weighted in-context regression (TabFM approach)",
+        "features": [
+          "pen",
+          "market",
+          "workers",
+          "aiEng",
+          "aiEngDensity",
+          "usaPen",
+          "globalPen"
         ]
       }
     },
@@ -1682,6 +1862,21 @@
           27,
           32,
           37
+        ]
+      },
+      "tabfm": {
+        "predScore": 83,
+        "actualScore": 75,
+        "diff": 8,
+        "method": "leave-one-out kernel-weighted in-context regression (TabFM approach)",
+        "features": [
+          "pen",
+          "market",
+          "workers",
+          "aiEng",
+          "aiEngDensity",
+          "usaPen",
+          "globalPen"
         ]
       }
     },
@@ -1827,6 +2022,21 @@
           37,
           42
         ]
+      },
+      "tabfm": {
+        "predScore": 77.8,
+        "actualScore": 72,
+        "diff": 5.8,
+        "method": "leave-one-out kernel-weighted in-context regression (TabFM approach)",
+        "features": [
+          "pen",
+          "market",
+          "workers",
+          "aiEng",
+          "aiEngDensity",
+          "usaPen",
+          "globalPen"
+        ]
       }
     },
     {
@@ -1964,6 +2174,21 @@
           19,
           23,
           27
+        ]
+      },
+      "tabfm": {
+        "predScore": 74.4,
+        "actualScore": 68,
+        "diff": 6.4,
+        "method": "leave-one-out kernel-weighted in-context regression (TabFM approach)",
+        "features": [
+          "pen",
+          "market",
+          "workers",
+          "aiEng",
+          "aiEngDensity",
+          "usaPen",
+          "globalPen"
         ]
       }
     }
