@@ -25,7 +25,7 @@
 
 const STORE_KEY = 'zen-paywall-v1';
 
-export class ZenPaywall {
+class ZenPaywall {
   constructor({ slug, freeLimit = 3, paymentLink = '', appTitle = '' }) {
     this.slug = slug;
     this.freeLimit = freeLimit;
