@@ -70,6 +70,23 @@ button{cursor:pointer;font-family:inherit;border:none;}
 .topbar-tab.on{background:var(--surface);color:var(--primary);font-weight:700;box-shadow:var(--shadow-sm);}
 .topbar-tab:hover:not(.on){background:rgba(255,255,255,.6);color:var(--text)}
 
+/* ── Story Progress Bar (起承転結) ── */
+.story-progress{position:sticky;top:53px;z-index:199;display:flex;background:var(--surface);border-bottom:1px solid var(--border)}
+.story-seg{flex:1;position:relative;padding:6px 8px 5px;text-align:center;font-size:10px;font-weight:700;color:var(--text3);background:var(--surface2);transition:.25s;letter-spacing:.02em}
+.story-seg::after{content:'';position:absolute;left:0;right:0;bottom:0;height:2px;background:transparent;transition:.25s}
+.story-seg .story-seg-q{display:block;font-size:9px;font-weight:500;color:var(--text3);opacity:.75;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.story-seg.on{background:var(--surface);color:var(--text)}
+.story-seg.on .story-seg-q{opacity:1}
+.story-seg[data-act="ki"].on{color:#2563EB}
+.story-seg[data-act="ki"].on::after{background:#2563EB}
+.story-seg[data-act="sho"].on{color:#059669}
+.story-seg[data-act="sho"].on::after{background:#059669}
+.story-seg[data-act="ten"].on{color:#7C3AED}
+.story-seg[data-act="ten"].on::after{background:#7C3AED}
+.story-seg[data-act="ketsu"].on{color:#D97706}
+.story-seg[data-act="ketsu"].on::after{background:#D97706}
+@media (max-width:640px){.story-seg-q{display:none}}
+
 /* ── Sidebar ── */
 .s-group{padding:0 8px;margin-bottom:4px}
 .s-label{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;padding:8px 8px 4px;display:block}
@@ -435,6 +452,11 @@ tr:hover td{background:var(--surface2)}
 /* ── Section Bridge ── */
 .section-bridge{display:flex;align-items:center;gap:12px;padding:14px 0;color:var(--text3);font-size:11px;font-weight:600;letter-spacing:.01em}
 .bridge-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent)}
+/* 物語の大きな転換点（承→転、転→結）だけ、次パートの色をわずかに帯びさせる */
+.section-bridge.act-turn{color:var(--purple)}
+.section-bridge.act-turn .bridge-line{background:linear-gradient(90deg,transparent,#DDD6FE,transparent)}
+.section-bridge.act-conclude{color:var(--orange)}
+.section-bridge.act-conclude .bridge-line{background:linear-gradient(90deg,transparent,var(--orange-br),transparent)}
 
 /* ── Top5 Ranking ── */
 .rank-list{display:flex;flex-direction:column;gap:6px}
@@ -659,6 +681,14 @@ tr:hover td{background:var(--surface2)}
     <span class="page-badge">e-Stat 標準産業分類準拠</span>
   </div>
 </header>
+
+<!-- ══ STORY PROGRESS BAR（起承転結） ══ -->
+<nav class="story-progress" id="story-progress" aria-label="読み進め状況">
+  <div class="story-seg on" data-act="ki" onclick="scrollToStorySection('sec-overview')">起<span class="story-seg-q">結論：どこが狙い目？</span></div>
+  <div class="story-seg" data-act="sho" onclick="scrollToStorySection('sec-top5')">承<span class="story-seg-q">なぜそう言えるのか</span></div>
+  <div class="story-seg" data-act="ten" onclick="scrollToStorySection('sec-timefm')">転<span class="story-seg-q">今後どうなる？</span></div>
+  <div class="story-seg" data-act="ketsu" onclick="scrollToStorySection('sec-recommend')">結<span class="story-seg-q">何をすべきか</span></div>
+</nav>
 
 <div class="body">
 
@@ -916,8 +946,8 @@ tr:hover td{background:var(--surface2)}
   </div>
 </div>
 
-<!-- BRIDGE 2d -->
-<div class="section-bridge fade-in">
+<!-- BRIDGE 2d (承→転の転換点) -->
+<div class="section-bridge fade-in act-turn">
   <div class="bridge-line"></div>
   <span>今はよくても、この先はどうなる？ ↓</span>
   <div class="bridge-line"></div>
@@ -1023,8 +1053,8 @@ tr:hover td{background:var(--surface2)}
   </div><!-- /lock-content -->
 </div><!-- /lock-zone #sec-timefm -->
 
-<!-- BRIDGE: TabFM -> TOP PICKS -->
-<div class="section-bridge fade-in">
+<!-- BRIDGE: TabFM -> TOP PICKS (転→結の転換点) -->
+<div class="section-bridge fade-in act-conclude">
   <div class="bridge-line"></div>
   <span>検証は済んだ。では、明日から何をすべきか ↓</span>
   <div class="bridge-line"></div>
@@ -1974,6 +2004,11 @@ function scrollToSection(id, el){
   }
 }
 
+function scrollToStorySection(id){
+  var target = document.getElementById(id);
+  if(target) target.scrollIntoView({behavior:'smooth'});
+}
+
 /* ====================================================
    INIT
    ==================================================== */
@@ -2215,12 +2250,14 @@ document.addEventListener('DOMContentLoaded', function(){
   initAuth();
   // スクロールスパイ
   initScrollSpy();
+  initStoryProgressSpy();
 });
 
 function initScrollSpy(){
   var sectionIds = ['sec-overview','sec-industries','sec-timefm','sec-recommend','sec-avoid'];
   var tabs = document.querySelectorAll('.topbar-tabs .topbar-tab');
   if(!tabs.length) return;
+  var scrollRoot = document.querySelector('.main');
   var observer = new IntersectionObserver(function(entries){
     entries.forEach(function(entry){
       if(entry.isIntersecting){
@@ -2231,8 +2268,41 @@ function initScrollSpy(){
         }
       }
     });
-  },{threshold:0.25, rootMargin:'-56px 0px -40% 0px'});
+  },{root:scrollRoot, threshold:0, rootMargin:'-56px 0px -85% 0px'});
   sectionIds.forEach(function(id){
+    var el = document.getElementById(id);
+    if(el) observer.observe(el);
+  });
+}
+
+/**
+ * 起承転結プログレスバー用のスクロールスパイ。
+ * 各セクションIDを起承転結（ki/sho/ten/ketsu）に割り当て、
+ * 画面内に入ったセクションが属するパートを story-progress でハイライトする。
+ */
+function initStoryProgressSpy(){
+  var actMap = {
+    'sec-overview':'ki',
+    'sec-top5':'sho', 'sec-charts':'sho', 'sec-matrix':'sho', 'sec-industries':'sho',
+    'sec-timefm':'ten',
+    'sec-recommend':'ketsu', 'sec-avoid':'ketsu'
+  };
+  var segs = document.querySelectorAll('.story-seg');
+  if(!segs.length) return;
+  var scrollRoot = document.querySelector('.main');
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        var act = actMap[entry.target.id];
+        if(act){
+          segs.forEach(function(s){ s.classList.remove('on'); });
+          var target = document.querySelector('.story-seg[data-act="'+act+'"]');
+          if(target) target.classList.add('on');
+        }
+      }
+    });
+  },{root:scrollRoot, threshold:0, rootMargin:'-90px 0px -85% 0px'});
+  Object.keys(actMap).forEach(function(id){
     var el = document.getElementById(id);
     if(el) observer.observe(el);
   });
