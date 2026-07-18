@@ -831,8 +831,8 @@ tr:hover td{background:var(--surface2)}
 <!-- TOP5 RANKING -->
 <div class="sec fade-in" id="sec-top5" style="padding-top:0">
   <div class="sec-hdr" style="margin-bottom:12px">
-    <div class="sec-title">🏆 参入スコア TOP5ランキング</div>
-    <div class="sec-meta">クリックで業界詳細へジャンプ → 12ヶ月ロードマップ・ROI試算まで確認できます</div>
+    <div class="sec-title">🏆 なぜこの5業界が有望なのか</div>
+    <div class="sec-meta">参入スコア TOP5ランキング｜クリックで業界詳細へジャンプ → 12ヶ月ロードマップ・ROI試算まで確認できます</div>
   </div>
   <div class="rank-list" id="top5-container"></div>
 </div>
@@ -855,8 +855,8 @@ tr:hover td{background:var(--surface2)}
 <!-- CHARTS ROW -->
 <div class="sec fade-in" id="sec-charts">
   <div class="sec-hdr">
-    <div class="sec-title">📊 業界別 AI浸透率マップ（日本標準産業分類 大分類別）</div>
-    <div class="sec-meta">赤線: 参入推奨閾値（25%）</div>
+    <div class="sec-title">📊 競合が少ないのはどこか</div>
+    <div class="sec-meta">業界別 AI浸透率マップ（日本標準産業分類 大分類別）｜赤線: 参入推奨閾値（25%）</div>
   </div>
   <div class="g3">
     <div class="card">
@@ -885,8 +885,8 @@ tr:hover td{background:var(--surface2)}
 
 <div class="sec fade-in" id="sec-matrix">
   <div class="sec-hdr">
-    <div class="sec-title">🎯 機会マトリクス ＆ 年間ROI比較</div>
-    <div class="sec-meta">浸透率の低さ（未開拓度）と市場規模を掛け合わせ、実際のROI潜在力を検証する</div>
+    <div class="sec-title">🎯 儲かるポジションはどこにあるか</div>
+    <div class="sec-meta">機会マトリクス＆年間ROI比較｜浸透率の低さ（未開拓度）と市場規模を掛け合わせ、実際のROI潜在力を検証する</div>
   </div>
   <div class="g2">
     <div class="card">
@@ -916,7 +916,7 @@ tr:hover td{background:var(--surface2)}
 <!-- INDUSTRY CARDS -->
 <div class="sec fade-in" id="sec-industries">
   <div class="sec-hdr">
-    <div class="sec-title">🏢 業界別詳細分析（参入推奨 15業界）</div>
+    <div class="sec-title">🏢 現場で実際に何が起きているか</div>
     <div style="display:flex;gap:6px;flex-wrap:wrap">
       <button class="topbar-tab on" onclick="filterCards('all',this)">すべて</button>
       <button class="topbar-tab" onclick="filterCards('critical',this)">⚡ 緊急</button>
@@ -924,13 +924,15 @@ tr:hover td{background:var(--surface2)}
       <button class="topbar-tab" onclick="filterCards('normal',this)">📌 余裕あり</button>
     </div>
   </div>
+  <div class="sec-meta" style="margin:-6px 0 12px">参入推奨15業界の詳細｜ペイン・AIソリューション・Before/After・推奨アクションまで業界ごとに深掘り</div>
   <div class="ind-grid" id="ind-container"></div>
 </div>
 
 <!-- SUMMARY TABLE -->
 <div class="sec fade-in">
   <div class="sec-hdr">
-    <div class="sec-title">📋 全業界 比較サマリー（参入優先度順）</div>
+    <div class="sec-title">📋 全業界を一覧で比べると</div>
+    <div class="sec-meta">比較サマリー（参入優先度順）</div>
   </div>
   <div class="tbl-wrap">
     <table>
@@ -967,7 +969,7 @@ tr:hover td{background:var(--surface2)}
   <div class="lock-content locked" id="content-timefm">
 <div class="sec fade-in">
   <div class="sec-hdr">
-    <div class="sec-title">📈 TimesFM 時系列予測（2021〜2032年）</div>
+    <div class="sec-title">📈 このまま何もしないとどうなるか</div>
     <a href="https://github.com/google-research/timesfm" target="_blank" style="font-size:11px;color:var(--primary)">GitHub: google-research/timesfm ↗</a>
   </div>
   <div class="tfm-badge">🤖 TimesFM v2.0 — Patched Transformer（512 patch, 1024 context）｜ 予測期間: 6年 ｜ 90%信頼区間</div>
@@ -1014,7 +1016,7 @@ tr:hover td{background:var(--surface2)}
 <!-- TabFM SECTION -->
 <div class="sec fade-in">
   <div class="sec-hdr">
-    <div class="sec-title">🧮 TabFM 参入優先度スコア検証（表形式ゼロショット予測）</div>
+    <div class="sec-title">🧮 その勘は本当に正しいか</div>
     <a href="https://github.com/google-research/tabfm" target="_blank" style="font-size:11px;color:var(--primary)">GitHub: google-research/tabfm ↗</a>
   </div>
   <div class="tabfm-badge">🧮 TabFM v1.0 — Tabular Foundation Model（in-context learning）｜ Leave-One-Out ゼロショット回帰 ｜ 15業界横断</div>
@@ -1074,8 +1076,8 @@ tr:hover td{background:var(--surface2)}
   <div class="lock-content locked" id="content-recommend">
 <div class="sec fade-in">
   <div class="sec-hdr">
-    <div class="sec-title">🏆 AIサービス参入 TOP推奨ターゲット</div>
-    <div class="sec-meta">「どの企業の・何のサービスに・どのAIを・年間いくら削減」まで特定</div>
+    <div class="sec-title">🏆 では明日から何をすべきか</div>
+    <div class="sec-meta">AIサービス参入 TOP推奨ターゲット｜「どの企業の・何のサービスに・どのAIを・年間いくら削減」まで特定</div>
   </div>
   <div id="top-cards"></div>
   <div class="tbl-wrap">
@@ -1100,8 +1102,8 @@ tr:hover td{background:var(--surface2)}
 <!-- AVOID SECTION -->
 <div class="sec fade-in" id="sec-avoid">
   <div class="sec-hdr">
-    <div class="sec-title">🚫 参入回避推奨市場（AI急速普及・競合飽和）</div>
-    <div class="sec-meta">各市場に: 回避理由 / 支配プレイヤー / 参入コスト / なぜ負けるか / 代わりに狙うべき隣接市場</div>
+    <div class="sec-title">🚫 逆に何に手を出してはいけないか</div>
+    <div class="sec-meta">参入回避推奨市場（AI急速普及・競合飽和）｜各市場に: 回避理由 / 支配プレイヤー / 参入コスト / なぜ負けるか / 代わりに狙うべき隣接市場</div>
   </div>
   <div class="alert-banner type-orange">
     <div class="alert-icon">⚠️</div>
