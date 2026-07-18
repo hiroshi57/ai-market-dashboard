@@ -908,7 +908,7 @@ tr:hover td{background:var(--surface2)}
         <tr>
           <th>#</th><th>大分類</th><th>業界名</th><th>日本浸透率</th><th>米国比較</th>
           <th>市場規模</th><th>AIエンジニア密度</th><th>施策タイプ</th>
-          <th>年間ROI(億)</th><th>回収期間</th><th>最大補助金</th><th>収益モデル</th><th>最短収益化</th><th>参入スコア</th><th>判定</th>
+          <th>年間ROI(億)</th><th>回収期間</th><th>最大補助金</th><th>収益モデル</th><th>最短収益化</th><th>参入スコア</th><th>判定</th><th>一言</th>
         </tr>
       </thead>
       <tbody id="summary-table"></tbody>
@@ -1198,6 +1198,35 @@ function getDensityText(d){
   return '<span style="color:var(--green);font-weight:700;">🟢 高（'+d.toFixed(3)+'人/千人）</span>';
 }
 
+/**
+ * 業界の数値群（浸透率・スコア・回収期間・AI人材密度）を総合し、
+ * 「この数字は何を意味するか」を一言で返す（TabFM解釈列と同じ思想）。
+ * 優先順位: 緊急度 > 参入しやすさ > 総合評価 の順で最も強いシグナルを1つ選ぶ。
+ */
+function getInsightText(ind){
+  var paybackMonths = parseInt(ind.payback, 10) || 99;
+  if(ind.priority === 'critical' && paybackMonths <= 9){
+    return {icon:'🔥', label:'今が最も参入しやすい', color:'var(--red)'};
+  }
+  if(ind.pen <= 8 && (ind.aiEngDensity||1) < 0.02){
+    return {icon:'🕳️', label:'競合ほぼ不在の空白地帯', color:'var(--green)'};
+  }
+  if(ind.score >= 90){
+    return {icon:'⭐', label:'総合評価トップクラス', color:'var(--green)'};
+  }
+  if(paybackMonths >= 20){
+    return {icon:'⏳', label:'回収まで時間がかかる', color:'var(--orange)'};
+  }
+  if(ind.priority === 'normal'){
+    return {icon:'📌', label:'急がなくても余地あり', color:'var(--primary)'};
+  }
+  return {icon:'△', label:'標準的な参入機会', color:'var(--text3)'};
+}
+function insightBadge(ind){
+  var i = getInsightText(ind);
+  return '<span style="color:'+i.color+';font-weight:700;font-size:10px;white-space:nowrap">'+i.icon+' '+i.label+'</span>';
+}
+
 /* ====================================================
    RENDER
    ==================================================== */
@@ -1223,6 +1252,7 @@ function renderIndustryCards(){
       // Name & Code
       '<div class="nc-name" style="color:'+ind.color+'">'+ind.name+'</div>'+
       '<div class="nc-code">e-Stat 大分類: '+ind.estat+' — '+ind.estatName+'</div>'+
+      '<div style="margin:4px 0 2px">'+insightBadge(ind)+'</div>'+
 
       // Progress bar
       '<div class="pbar"><div class="pfill" style="width:'+ind.pen+'%;background:'+priFill+'"></div></div>'+
@@ -1445,6 +1475,7 @@ function renderSummaryTable(){
       '<td style="color:var(--green);font-weight:700">'+(ind.timeToRevenue||'—')+'</td>'+
       '<td><div class="score-bar"><div class="score-fill" style="width:'+ind.score+'px;background:'+scoreColor+'"></div><span class="score-num" style="color:'+scoreColor+'">'+ind.score+'</span></div></td>'+
       '<td>'+getPriBadge(ind.priority)+'</td>'+
+      '<td>'+insightBadge(ind)+'</td>'+
     '</tr>';
   }).join('');
 }
@@ -1466,7 +1497,9 @@ function renderForecastTable(){
       '<td style="font-size:10px;color:var(--red)">'+f.block+'</td>'+
       '<td style="font-weight:700;color:var(--primary)">'+f.f2028+'% <span style="color:var(--green);font-size:10px">/ '+opt2028+'%↑</span></td>'+
       '<td style="font-weight:700;color:var(--purple)">'+f.f2032+'% <span style="color:var(--green);font-size:10px">/ '+opt2032+'%↑</span></td>'+
-      '<td style="font-weight:700;color:'+dlColor+'">'+dlLabel+'</td>'+
+      '<td style="font-weight:700;color:'+dlColor+'">'+dlLabel+'<br><span style="font-size:9px;font-weight:600;color:var(--text3)">'+
+        (f.urgent?'今動かないと間に合わない':(f.f2028-f.pen)>=15?'このまま様子見は損':'まだ焦らなくてよい')+
+      '</span></td>'+
       '<td style="font-size:10px;color:var(--text2)">'+(ind.revenueModel||'—')+'</td>'+
       '<td style="color:var(--green);font-weight:700;font-size:11px">'+(ind.timeToRevenue||'—')+'</td>'+
     '</tr>';
