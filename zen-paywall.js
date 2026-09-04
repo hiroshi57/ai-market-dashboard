@@ -122,6 +122,24 @@ class ZenPaywall {
     const existing = document.getElementById('zen-paywall-modal');
     if (existing) existing.remove();
 
+    // 2026-09-03（B#10、ZEN-013と同型バグの横展開修正）: overlay を
+    // position:fixed で表示するだけで document.body に overflow:hidden を
+    // 設定していなかったため、モーダル表示中でもマウスホイール/タッチで
+    // 背景ページがスクロールでき、隠れているはずのPro相当コンテンツが
+    // 無料で全文読めてしまっていた（certzen等で見つかった同型バグ、
+    // このアプリは実機未検証のまま放置されていた）。
+    const previousBodyOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const blockScroll = (e) => { e.preventDefault(); };
+    document.addEventListener('wheel', blockScroll, { passive: false });
+    document.addEventListener('touchmove', blockScroll, { passive: false });
+    const restoreScroll = () => {
+      document.body.style.overflow = previousBodyOverflow;
+      document.removeEventListener('wheel', blockScroll);
+      document.removeEventListener('touchmove', blockScroll);
+    };
+    window.scrollTo(0, 0);
+
     const overlay = document.createElement('div');
     overlay.id = 'zen-paywall-modal';
     overlay.style.cssText =
@@ -162,14 +180,18 @@ class ZenPaywall {
       + feats
       + social
       + priceBlock
+      // 購入0件打開タスクC#16/#17: 返金保証・開発者透明性訴求を追加。
+      + `<div style="font-size:.72rem;color:#059669;font-weight:700;margin:0 0 10px">✅ 7日間全額返金保証・お気軽にお試しください</div>`
       + `<button id="zen-paywall-buy" style="width:100%;padding:13px;border:none;border-radius:11px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;font-weight:800;font-size:.98rem;cursor:pointer;box-shadow:0 6px 18px rgba(124,58,237,.35)">${proPrice} でProにする</button>`
       + `<button id="zen-paywall-close" style="width:100%;padding:9px;margin-top:6px;border:none;background:none;color:#94a3b8;font-size:.8rem;cursor:pointer">あとで</button>`
-      + `<div style="font-size:.68rem;color:#cbd5e1;margin-top:8px">一度購入すればずっと使えます・返金は規約に準拠</div>`
+      + `<div style="font-size:.68rem;color:#cbd5e1;margin-top:8px">一度購入すればずっと使えます</div>`
+      + `<div style="font-size:.66rem;color:#cbd5e1;margin-top:2px">開発者本人が運用しています。不具合・要望はXのDMまでご連絡ください</div>`
       + `</div>`;
     document.body.appendChild(overlay);
+    const closeModal = () => { restoreScroll(); overlay.remove(); };
     overlay.querySelector('#zen-paywall-buy').onclick = () => this.startCheckout();
-    overlay.querySelector('#zen-paywall-close').onclick = () => overlay.remove();
-    overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
+    overlay.querySelector('#zen-paywall-close').onclick = closeModal;
+    overlay.onclick = (e) => { if (e.target === overlay) closeModal(); };
   }
 }
 
